@@ -336,20 +336,32 @@ let projects = [];
 let activeProject = null;
 let taskState = {}; // key -> { checked, timestamp }
 
-// ── API ────────────────────────────────────────────────────
+// ── API — all via GET to avoid CORS issues with GAS ────────
 
 async function api(params) {
+  // GAS redirects to a new URL; fetch needs to follow it
   const url = GAS_URL + "?" + new URLSearchParams(params);
-  const r = await fetch(url);
-  return r.json();
+  const r = await fetch(url, { redirect: "follow" });
+  const text = await r.text();
+  try { return JSON.parse(text); }
+  catch(e) { console.error("GAS response:", text); return { error: "Bad response" }; }
 }
 
+// All mutations also use GET (GAS POST is blocked cross-origin)
 async function apiPost(body) {
-  const r = await fetch(GAS_URL, {
-    method: "POST",
-    body: JSON.stringify(body)
+  const params = {};
+  // Flatten body into query params; encode name separately
+  Object.entries(body).forEach(([k,v]) => {
+    params[k] = (k === "project" && body.action === "createProject")
+      ? encodeURIComponent(String(v))
+      : String(v);
   });
-  return r.json();
+  // createProject uses "name" param not "project"
+  if (body.action === "createProject") {
+    params.name = params.project;
+    delete params.project;
+  }
+  return api(params);
 }
 
 // ── Init ───────────────────────────────────────────────────
