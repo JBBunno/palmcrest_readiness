@@ -1,0 +1,687 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shutdown Checklist — Palm Crest</title>
+<style>
+:root {
+  --navy:    #0b1c33;
+  --navy2:   #0d2240;
+  --gold:    #c19c4b;
+  --gold-lt: #d4b472;
+  --gold-dk: #8a6e32;
+  --white:   #ffffff;
+  --off:     #f4f2ed;
+  --text:    #1a1a1a;
+  --muted:   #6b6b6b;
+  --border:  #ddd8ce;
+  --success: #2d7a4f;
+  --warn:    #b85c00;
+  --radius:  6px;
+  --card-r:  10px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--off);color:var(--text);min-height:100vh}
+
+/* ── Top bar ── */
+.topbar{background:var(--navy);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:54px;position:sticky;top:0;z-index:100}
+.topbar-brand{display:flex;align-items:center;gap:10px}
+.topbar-logo{width:28px;height:28px;background:var(--gold);border-radius:4px;display:flex;align-items:center;justify-content:center}
+.topbar-logo svg{width:16px;height:16px}
+.topbar-name{color:var(--white);font-size:14px;font-weight:600;letter-spacing:0.02em}
+.topbar-sub{color:var(--gold);font-size:11px;letter-spacing:0.06em;text-transform:uppercase}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.btn{padding:6px 14px;border-radius:var(--radius);font-size:12px;font-weight:500;cursor:pointer;border:none;transition:all 0.15s;letter-spacing:0.01em}
+.btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.8)}
+.btn-ghost:hover{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.4);color:var(--white)}
+.btn-gold{background:var(--gold);color:var(--navy);font-weight:600}
+.btn-gold:hover{background:var(--gold-lt)}
+.btn-danger{background:transparent;border:1px solid #c0392b;color:#c0392b}
+.btn-danger:hover{background:#c0392b;color:white}
+.btn-sm{padding:4px 10px;font-size:11px}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--muted)}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold-dk)}
+
+/* ── Layout ── */
+.shell{display:flex;min-height:calc(100vh - 54px)}
+.sidebar{width:260px;background:var(--white);border-right:1px solid var(--border);flex-shrink:0;display:flex;flex-direction:column}
+.main{flex:1;padding:1.5rem;min-width:0}
+
+/* ── Sidebar ── */
+.sidebar-hd{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.sidebar-hd h3{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted)}
+.project-list{flex:1;overflow-y:auto}
+.project-item{padding:11px 16px;border-bottom:1px solid var(--border);cursor:pointer;display:flex;align-items:center;gap:10px;transition:background 0.12s}
+.project-item:hover{background:var(--off)}
+.project-item.active{background:#f0ead8;border-left:3px solid var(--gold)}
+.project-item.active{padding-left:13px}
+.proj-name{font-size:13px;font-weight:500;color:var(--text);flex:1;line-height:1.3}
+.proj-pct{font-size:11px;font-weight:600;color:var(--muted)}
+.project-item.active .proj-pct{color:var(--gold-dk)}
+.sidebar-ft{padding:12px 16px;border-top:1px solid var(--border)}
+
+/* ── New project modal ── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:var(--white);border-radius:var(--card-r);padding:24px;width:360px;box-shadow:0 8px 32px rgba(0,0,0,0.18)}
+.modal h3{font-size:15px;font-weight:600;margin-bottom:16px;color:var(--navy)}
+.modal input{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:14px;margin-bottom:12px;outline:none;font-family:inherit}
+.modal input:focus{border-color:var(--gold)}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end}
+
+/* ── Header row ── */
+.page-hd{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.25rem;gap:12px;flex-wrap:wrap}
+.page-hd-left h2{font-size:18px;font-weight:600;color:var(--navy);margin-bottom:2px}
+.page-hd-left p{font-size:12px;color:var(--muted)}
+.page-hd-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+/* ── Progress summary ── */
+.summary-bar{background:var(--white);border:1px solid var(--border);border-radius:var(--card-r);padding:14px 18px;margin-bottom:1.25rem;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.summary-stat{text-align:center}
+.summary-stat .val{font-size:20px;font-weight:700;color:var(--navy);line-height:1}
+.summary-stat .lbl{font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin-top:2px}
+.summary-divider{width:1px;height:36px;background:var(--border)}
+.progress-track{flex:1;height:8px;background:var(--off);border-radius:4px;overflow:hidden;min-width:120px}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold-dk),var(--gold));border-radius:4px;transition:width 0.4s ease}
+
+/* ── Phase legend ── */
+.phase-legend{display:flex;gap:12px;margin-bottom:1.25rem;flex-wrap:wrap}
+.ph-badge{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);font-weight:500}
+.ph-dot{width:8px;height:8px;border-radius:50%}
+
+/* ── Week grid ── */
+.weeks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.week-card{background:var(--white);border:1px solid var(--border);border-radius:var(--card-r);overflow:hidden;transition:box-shadow 0.15s,border-color 0.15s}
+.week-card:hover{box-shadow:0 2px 12px rgba(0,0,0,0.07)}
+.week-card.done{border-color:#a3c9a8}
+.week-hd{padding:10px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
+.week-num-badge{font-size:10px;font-weight:700;letter-spacing:0.04em;padding:2px 7px;border-radius:4px;white-space:nowrap;text-transform:uppercase}
+.ph-1 .week-num-badge{background:#e8f5ee;color:#1e6b3c}
+.ph-2 .week-num-badge{background:#fff3e0;color:#8a4500}
+.ph-3 .week-num-badge{background:#e8eef8;color:#1a3a6e}
+.ph-4 .week-num-badge{background:#fdecea;color:#9b2020}
+.week-title-txt{font-size:12px;font-weight:600;color:var(--text);flex:1}
+.week-pct{font-size:11px;color:var(--muted);font-weight:500}
+.week-card.done .week-pct{color:var(--success)}
+.week-body{padding:8px 12px}
+.task-row{display:flex;align-items:flex-start;gap:8px;padding:5px 0;border-bottom:1px solid #f0ede6;cursor:pointer;transition:background 0.1s}
+.task-row:last-child{border-bottom:none}
+.task-row:hover{background:#faf8f4;margin:0 -12px;padding-left:12px;padding-right:12px}
+.cb{width:15px;height:15px;border:1.5px solid #ccc;border-radius:3px;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:all 0.15s;background:var(--white)}
+.cb.checked{background:var(--gold-dk);border-color:var(--gold-dk)}
+.cb.checked::after{content:'';display:block;width:8px;height:5px;border-left:2px solid white;border-bottom:2px solid white;transform:rotate(-45deg);margin-top:-1px}
+.task-txt{font-size:12px;color:#444;line-height:1.4;flex:1}
+.task-txt.done-txt{color:#aaa;text-decoration:line-through}
+.task-ts{font-size:10px;color:var(--muted);margin-top:1px;display:block}
+
+/* ── Empty / loading state ── */
+.empty{padding:3rem 2rem;text-align:center;color:var(--muted)}
+.empty h3{font-size:15px;font-weight:500;margin-bottom:6px;color:var(--navy)}
+.empty p{font-size:12px}
+.spinner{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Report ── */
+.report-modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto}
+.report-modal-bg.open{display:flex}
+.report-box{background:var(--white);border-radius:var(--card-r);width:100%;max-width:680px;margin:auto}
+.report-header{background:var(--navy);color:var(--white);padding:20px 24px;border-radius:var(--card-r) var(--card-r) 0 0;display:flex;align-items:flex-start;justify-content:space-between}
+.report-header h2{font-size:17px;font-weight:600}
+.report-header p{font-size:11px;color:rgba(255,255,255,0.6);margin-top:3px}
+.report-body{padding:20px 24px}
+.report-section{margin-bottom:20px}
+.report-section h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.report-week-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.report-week-label{font-size:12px;font-weight:500;color:var(--navy);width:140px;flex-shrink:0}
+.report-track{flex:1;height:6px;background:var(--off);border-radius:3px;overflow:hidden}
+.report-fill{height:100%;background:var(--gold-dk);border-radius:3px}
+.report-pct{font-size:11px;font-weight:600;color:var(--muted);width:36px;text-align:right;flex-shrink:0}
+.incomplete-item{display:flex;gap:8px;font-size:12px;color:var(--text);padding:5px 0;border-bottom:1px solid #f5f3ee}
+.incomplete-item:last-child{border-bottom:none}
+.incomplete-week{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--muted);width:60px;flex-shrink:0;padding-top:1px}
+.report-footer{padding:14px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
+
+/* ── Print ── */
+@media print{
+  .topbar,.sidebar,.page-hd-right,.report-footer,.modal-bg,.report-modal-bg .btn{display:none!important}
+  .shell{display:block}
+  .main{padding:0}
+  .report-box{max-width:100%;box-shadow:none;border:none}
+  .report-modal-bg{position:static!important;display:block!important;padding:0!important;background:none!important}
+  .report-header{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{background:white}
+}
+
+@media(max-width:680px){
+  .sidebar{display:none}
+  .weeks-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="topbar-logo">
+      <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="10" width="2" height="4" fill="#0b1c33"/>
+        <rect x="5" y="7" width="2" height="7" fill="#0b1c33"/>
+        <rect x="8" y="4" width="2" height="10" fill="#0b1c33"/>
+        <rect x="11" y="2" width="2" height="12" fill="#0b1c33"/>
+      </svg>
+    </div>
+    <div>
+      <div class="topbar-name">Palm Crest</div>
+      <div class="topbar-sub">Scheduling Solutions</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <button class="btn btn-ghost btn-sm" onclick="openReport()" id="btn-report" style="display:none">Planning report</button>
+    <button class="btn btn-ghost btn-sm" onclick="confirmClear()" id="btn-clear" style="display:none">Clear checklist</button>
+  </div>
+</div>
+
+<div class="shell">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-hd">
+      <h3>Shutdowns</h3>
+    </div>
+    <div class="project-list" id="project-list">
+      <div class="empty"><div class="spinner"></div><p>Loading…</p></div>
+    </div>
+    <div class="sidebar-ft">
+      <button class="btn btn-gold" style="width:100%" onclick="showNewProject()">+ New shutdown</button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main" id="main">
+    <div class="empty" style="margin-top:4rem">
+      <h3>Select a shutdown</h3>
+      <p>Choose a project from the sidebar or create a new one.</p>
+    </div>
+  </main>
+</div>
+
+<!-- New project modal -->
+<div class="modal-bg" id="new-proj-modal">
+  <div class="modal">
+    <h3>New shutdown project</h3>
+    <input type="text" id="new-proj-name" placeholder="e.g. Talison Q3 2026" maxlength="60"
+      onkeydown="if(event.key==='Enter')createProject()">
+    <div class="modal-btns">
+      <button class="btn btn-outline" onclick="closeNewProject()">Cancel</button>
+      <button class="btn btn-gold" onclick="createProject()">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- Report modal -->
+<div class="report-modal-bg" id="report-modal">
+  <div class="report-box" id="report-box"></div>
+</div>
+
+<script>
+// ── CONFIG — paste your GAS web app URL here ──────────────
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxwGZd3yrDdHvYSnusre5-dNsbtdeH5qZtiw8928pcsVp6q3bgOzrv79zqYP5sWG-KT/exec";
+// ─────────────────────────────────────────────────────────
+
+const WEEKS = [
+  { num:1, title:"Project setup", phase:1, tasks:[
+    "Open PalmCrest MS Project template",
+    "Verify template version and ribbon tools",
+    "Create project calendar and shift patterns",
+    "Set up WBS top-level structure",
+    "Create phase/area header tasks",
+    "Confirm shutdown dates and duration with client"
+  ]},
+  { num:2, title:"WBS and FLOC structure", phase:1, tasks:[
+    "Build out full WBS hierarchy",
+    "Verify FLOC levels match SAP equipment hierarchy",
+    "Check WBS level discipline against standard (5-level max)",
+    "Create sub-header placeholders for each work centre",
+    "Align WBS with scope document / SWR list"
+  ]},
+  { num:3, title:"First SAP import", phase:1, tasks:[
+    "Export IW37N data from SAP for all work orders",
+    "Run ImprtSap macro to load work orders",
+    "Move work orders into correct WBS / FLOC positions",
+    "Check for duplicates and unmatched FLOCs",
+    "Flag work orders with missing data (duration, resource)"
+  ]},
+  { num:4, title:"Non-SAP data and logic", phase:1, tasks:[
+    "Add non-SAP tasks (isolations, scaffold, inspections)",
+    "Populate Text fields: Supervisor, Team, Sub-team",
+    "Assign work centres and crew codes",
+    "Create basic logic links (FS dependencies)",
+    "Link isolation and de-isolation milestones",
+    "Re-import SAP and verify changes since week 3"
+  ]},
+  { num:5, title:"Critical path foundation", phase:2, tasks:[
+    "Identify the primary shutdown sequence",
+    "Build critical path through main equipment trains",
+    "Add key milestones (safe to enter, box-up, first fire)",
+    "Link contractor packages into main sequence",
+    "Check schedule is fully logic-driven (no floaters)",
+    "Re-import SAP and reconcile new/changed work orders"
+  ]},
+  { num:6, title:"Scope and resource loading", phase:2, tasks:[
+    "Challenge scope — remove duplicates, out-of-scope WOs",
+    "Identify work for replan (defer to post-shutdown)",
+    "Assign resources to all tasks",
+    "First resource levelling pass",
+    "Check crew loading curves — flatten peaks",
+    "Contractor input: request durations and resource plans"
+  ]},
+  { num:7, title:"Contractor integration", phase:2, tasks:[
+    "Incorporate contractor schedules and durations",
+    "Link contractor scope into main logic network",
+    "Identify contractor-owned CP tasks",
+    "Re-import SAP — verify any scope additions",
+    "Check interface points between disciplines",
+    "Update Supervisor and team assignments for contractors"
+  ]},
+  { num:8, title:"Critical path refinement", phase:3, tasks:[
+    "Identify all CP and CT (critical-to) tasks",
+    "Colour-code / flag CP tasks in schedule",
+    "Identify float thresholds — near-critical tasks",
+    "Second resource levelling pass after CP is set",
+    "Check Executive Summary milestone dates",
+    "Re-import SAP — final scope freeze approaching"
+  ]},
+  { num:9, title:"Schedule optimisation", phase:3, tasks:[
+    "Compress CP where possible (parallel work, shift changes)",
+    "Validate all task durations with supervisors",
+    "Confirm isolations are linked and sequenced correctly",
+    "Check schedule against cost forecast (manhours vs budget)",
+    "Review replan list — confirm defer or include decisions",
+    "Contractor feedback loop — confirm logic and durations"
+  ]},
+  { num:10, title:"Stakeholder review", phase:3, tasks:[
+    "Produce draft schedule for internal review",
+    "Issue to discipline leads for duration / logic check",
+    "Facilitate scope challenge workshop",
+    "Capture mark-ups and update schedule",
+    "Re-import SAP — lock scope",
+    "Confirm Executive Summary is accurate and presentable"
+  ]},
+  { num:11, title:"Pre-issue QA", phase:4, tasks:[
+    "Run Schedule Health Check tool — resolve all flags",
+    "Verify no open ends / dangling tasks",
+    "Check all milestones have predecessors and successors",
+    "Confirm resource histogram is within crew limits",
+    "Final contractor confirmation of durations",
+    "Produce baseline version — save and lock"
+  ]},
+  { num:12, title:"Issue for construction", phase:4, tasks:[
+    "Produce final issue-for-construction schedule",
+    "Export Executive Summary report",
+    "Issue lookahead reports by discipline / crew",
+    "Upload to LiveTrack / client portal",
+    "Conduct pre-shutdown schedule walkthrough with team",
+    "Archive baseline — ready for progress tracking"
+  ]}
+];
+
+const PHASE_LABELS = { 1:"Foundation", 2:"Build", 3:"Optimise", 4:"Finalise" };
+const PHASE_COLORS = { 1:"#1e6b3c", 2:"#8a4500", 3:"#1a3a6e", 4:"#9b2020" };
+const PHASE_BG     = { 1:"#e8f5ee", 2:"#fff3e0", 3:"#e8eef8", 4:"#fdecea" };
+
+let projects = [];
+let activeProject = null;
+let taskState = {}; // key -> { checked, timestamp }
+
+// ── API ────────────────────────────────────────────────────
+
+async function api(params) {
+  const url = GAS_URL + "?" + new URLSearchParams(params);
+  const r = await fetch(url);
+  return r.json();
+}
+
+async function apiPost(body) {
+  const r = await fetch(GAS_URL, {
+    method: "POST",
+    body: JSON.stringify(body)
+  });
+  return r.json();
+}
+
+// ── Init ───────────────────────────────────────────────────
+
+async function init() {
+  const data = await api({ action: "listProjects" });
+  projects = data.projects || [];
+  renderSidebar();
+}
+
+// ── Sidebar ────────────────────────────────────────────────
+
+function renderSidebar() {
+  const el = document.getElementById("project-list");
+  if (!projects.length) {
+    el.innerHTML = `<div class="empty"><p>No shutdowns yet.<br>Create one below.</p></div>`;
+    return;
+  }
+  el.innerHTML = projects.map(p => {
+    const pct = projectPct(p.id);
+    const active = activeProject && activeProject.id === p.id ? "active" : "";
+    return `<div class="project-item ${active}" onclick="selectProject('${p.id}')">
+      <span class="proj-name">${esc(p.name)}</span>
+      <span class="proj-pct">${pct}%</span>
+    </div>`;
+  }).join("");
+}
+
+function projectPct(id) {
+  if (!taskState || activeProject?.id !== id) return "–";
+  const total = WEEKS.reduce((a,w)=>a+w.tasks.length,0);
+  const done  = Object.values(taskState).filter(v=>v.checked).length;
+  return Math.round(done/total*100);
+}
+
+// ── Select project ─────────────────────────────────────────
+
+async function selectProject(id) {
+  const p = projects.find(x=>x.id===id);
+  if (!p) return;
+  activeProject = p;
+  taskState = {};
+  renderMain(true);
+  const data = await api({ action:"getState", project:id });
+  if (data.state) taskState = data.state;
+  renderMain(false);
+  renderSidebar();
+  document.getElementById("btn-report").style.display = "";
+  document.getElementById("btn-clear").style.display  = "";
+}
+
+// ── Main checklist ─────────────────────────────────────────
+
+function renderMain(loading) {
+  const el = document.getElementById("main");
+  if (!activeProject) return;
+
+  if (loading) {
+    el.innerHTML = `<div class="empty" style="margin-top:4rem"><div class="spinner"></div><p>Loading checklist…</p></div>`;
+    return;
+  }
+
+  const total = WEEKS.reduce((a,w)=>a+w.tasks.length,0);
+  const done  = Object.values(taskState).filter(v=>v.checked).length;
+  const pct   = Math.round(done/total*100);
+
+  el.innerHTML = `
+    <div class="page-hd">
+      <div class="page-hd-left">
+        <h2>${esc(activeProject.name)}</h2>
+        <p>12-week shutdown planning checklist</p>
+      </div>
+    </div>
+
+    <div class="summary-bar">
+      <div class="summary-stat"><div class="val">${done}</div><div class="lbl">Complete</div></div>
+      <div class="summary-divider"></div>
+      <div class="summary-stat"><div class="val">${total-done}</div><div class="lbl">Remaining</div></div>
+      <div class="summary-divider"></div>
+      <div class="summary-stat"><div class="val">${pct}%</div><div class="lbl">Progress</div></div>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    </div>
+
+    <div class="phase-legend">
+      ${[1,2,3,4].map(ph=>`
+        <div class="ph-badge">
+          <div class="ph-dot" style="background:${PHASE_COLORS[ph]}"></div>
+          W${ph===1?'1–4':ph===2?'5–7':ph===3?'8–10':'11–12'} ${PHASE_LABELS[ph]}
+        </div>`).join("")}
+    </div>
+
+    <div class="weeks-grid">
+      ${WEEKS.map(w => renderWeekCard(w)).join("")}
+    </div>`;
+}
+
+function renderWeekCard(w) {
+  const tasks = w.tasks;
+  const done  = tasks.filter((_,i) => taskState[`${w.num}-${i}`]?.checked).length;
+  const pct   = Math.round(done/tasks.length*100);
+  const isDone = done === tasks.length;
+
+  return `<div class="week-card ph-${w.phase} ${isDone?'done':''}" id="wcard-${w.num}">
+    <div class="week-hd">
+      <span class="week-num-badge">Week ${w.num}</span>
+      <span class="week-title-txt">${w.title}</span>
+      <span class="week-pct" id="wpct-${w.num}">${done}/${tasks.length}</span>
+    </div>
+    <div class="week-body">
+      ${tasks.map((t,i) => {
+        const s = taskState[`${w.num}-${i}`] || {};
+        const chk = s.checked ? "checked" : "";
+        const txtClass = s.checked ? "done-txt" : "";
+        const ts = s.checked && s.timestamp ? `<span class="task-ts">${formatTs(s.timestamp)}</span>` : "";
+        return `<div class="task-row" onclick="toggleTask(${w.num},${i})">
+          <div class="cb ${chk}"></div>
+          <div class="task-txt ${txtClass}">${esc(t)}${ts}</div>
+        </div>`;
+      }).join("")}
+    </div>
+  </div>`;
+}
+
+// ── Toggle task ────────────────────────────────────────────
+
+async function toggleTask(wk, idx) {
+  const key = `${wk}-${idx}`;
+  const cur = taskState[key] || {};
+  const nowChecked = !cur.checked;
+  const ts = nowChecked ? new Date().toISOString() : "";
+  taskState[key] = { checked: nowChecked, timestamp: ts };
+
+  // Update UI immediately
+  const row = document.querySelector(`#wcard-${wk} .task-row:nth-child(${idx+1})`);
+  if (row) {
+    const cb  = row.querySelector(".cb");
+    const txt = row.querySelector(".task-txt");
+    cb.className  = "cb" + (nowChecked ? " checked" : "");
+    txt.className = "task-txt" + (nowChecked ? " done-txt" : "");
+    const existing = txt.querySelector(".task-ts");
+    if (existing) existing.remove();
+    if (nowChecked && ts) {
+      const sp = document.createElement("span");
+      sp.className = "task-ts";
+      sp.textContent = formatTs(ts);
+      txt.appendChild(sp);
+    }
+  }
+  updateWeekProgress(wk);
+  updateSummary();
+
+  // Persist
+  await apiPost({ action:"setState", project:activeProject.id, key, checked:nowChecked, timestamp:ts });
+}
+
+function updateWeekProgress(wk) {
+  const w = WEEKS.find(x=>x.num===wk);
+  const done = w.tasks.filter((_,i) => taskState[`${wk}-${i}`]?.checked).length;
+  const total = w.tasks.length;
+  const el = document.getElementById(`wpct-${wk}`);
+  if (el) el.textContent = `${done}/${total}`;
+  const card = document.getElementById(`wcard-${wk}`);
+  if (card) { done===total ? card.classList.add("done") : card.classList.remove("done"); }
+}
+
+function updateSummary() {
+  const total = WEEKS.reduce((a,w)=>a+w.tasks.length,0);
+  const done  = Object.values(taskState).filter(v=>v.checked).length;
+  const pct   = Math.round(done/total*100);
+  const bar   = document.querySelector(".progress-fill");
+  if (bar) bar.style.width = pct+"%";
+  const stats = document.querySelectorAll(".summary-stat .val");
+  if (stats[0]) stats[0].textContent = done;
+  if (stats[1]) stats[1].textContent = total-done;
+  if (stats[2]) stats[2].textContent = pct+"%";
+  renderSidebar();
+}
+
+// ── Clear ──────────────────────────────────────────────────
+
+function confirmClear() {
+  if (!activeProject) return;
+  if (!confirm(`Clear all checked tasks for "${activeProject.name}"?\n\nThis cannot be undone.`)) return;
+  clearChecklist();
+}
+
+async function clearChecklist() {
+  taskState = {};
+  renderMain(false);
+  await apiPost({ action:"clearProject", project:activeProject.id });
+}
+
+// ── Report ─────────────────────────────────────────────────
+
+function openReport() {
+  if (!activeProject) return;
+  const total = WEEKS.reduce((a,w)=>a+w.tasks.length,0);
+  const done  = Object.values(taskState).filter(v=>v.checked).length;
+  const pct   = Math.round(done/total*100);
+  const now   = new Date().toLocaleDateString("en-AU",{day:"2-digit",month:"short",year:"numeric"});
+
+  // Incomplete tasks
+  const incomplete = [];
+  WEEKS.forEach(w => {
+    w.tasks.forEach((t,i) => {
+      if (!taskState[`${w.num}-${i}`]?.checked) {
+        incomplete.push({ week:`W${w.num}`, title:w.title, task:t });
+      }
+    });
+  });
+
+  const box = document.getElementById("report-box");
+  box.innerHTML = `
+    <div class="report-header">
+      <div>
+        <h2>${esc(activeProject.name)}</h2>
+        <p>Planning report &mdash; generated ${now}</p>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="closeReport()" style="margin-top:2px">✕ Close</button>
+    </div>
+    <div class="report-body">
+
+      <div class="report-section">
+        <h3>Overall progress</h3>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+          <div class="progress-track" style="height:10px"><div class="report-fill" style="width:${pct}%"></div></div>
+          <strong style="font-size:15px;color:var(--navy)">${pct}%</strong>
+        </div>
+        <p style="font-size:12px;color:var(--muted)">${done} of ${total} tasks complete &nbsp;|&nbsp; ${total-done} remaining</p>
+      </div>
+
+      <div class="report-section">
+        <h3>Completion by week</h3>
+        ${WEEKS.map(w => {
+          const wd = w.tasks.filter((_,i)=>taskState[`${w.num}-${i}`]?.checked).length;
+          const wp = Math.round(wd/w.tasks.length*100);
+          return `<div class="report-week-row">
+            <div class="report-week-label">W${w.num} — ${w.title}</div>
+            <div class="report-track"><div class="report-fill" style="width:${wp}%"></div></div>
+            <div class="report-pct">${wp}%</div>
+          </div>`;
+        }).join("")}
+      </div>
+
+      ${incomplete.length ? `
+      <div class="report-section">
+        <h3>Incomplete tasks (${incomplete.length})</h3>
+        ${incomplete.map(x=>`
+          <div class="incomplete-item">
+            <span class="incomplete-week">${x.week}</span>
+            <span>${esc(x.task)}</span>
+          </div>`).join("")}
+      </div>` : `
+      <div class="report-section">
+        <h3>Incomplete tasks</h3>
+        <p style="font-size:12px;color:var(--success);font-weight:500">✓ All tasks complete</p>
+      </div>`}
+
+      <div class="report-section">
+        <h3>Task completion timestamps</h3>
+        ${(() => {
+          const rows = [];
+          WEEKS.forEach(w => {
+            w.tasks.forEach((t,i) => {
+              const s = taskState[`${w.num}-${i}`];
+              if (s?.checked && s.timestamp) {
+                rows.push(`<div class="incomplete-item">
+                  <span class="incomplete-week">W${w.num}</span>
+                  <span style="flex:1">${esc(t)}</span>
+                  <span style="font-size:10px;color:var(--muted);white-space:nowrap;margin-left:8px">${formatTs(s.timestamp)}</span>
+                </div>`);
+              }
+            });
+          });
+          return rows.length ? rows.join("") : `<p style="font-size:12px;color:var(--muted)">No tasks marked complete yet.</p>`;
+        })()}
+      </div>
+
+    </div>
+    <div class="report-footer">
+      <button class="btn btn-outline" onclick="closeReport()">Close</button>
+      <button class="btn btn-gold" onclick="window.print()">Print / Save as PDF</button>
+    </div>`;
+
+  document.getElementById("report-modal").classList.add("open");
+}
+
+function closeReport() {
+  document.getElementById("report-modal").classList.remove("open");
+}
+
+// ── New project ────────────────────────────────────────────
+
+function showNewProject() {
+  document.getElementById("new-proj-modal").classList.add("open");
+  setTimeout(()=>document.getElementById("new-proj-name").focus(),50);
+}
+
+function closeNewProject() {
+  document.getElementById("new-proj-modal").classList.remove("open");
+  document.getElementById("new-proj-name").value = "";
+}
+
+async function createProject() {
+  const name = document.getElementById("new-proj-name").value.trim();
+  if (!name) return;
+  closeNewProject();
+  const data = await apiPost({ action:"createProject", project:name });
+  if (data.ok) {
+    projects.push({ id:data.id, name:data.name, createdAt:new Date().toISOString() });
+    renderSidebar();
+    await selectProject(data.id);
+  }
+}
+
+// ── Utilities ──────────────────────────────────────────────
+
+function esc(s) {
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+function formatTs(iso) {
+  if (!iso) return "";
+  try {
+    return new Date(iso).toLocaleString("en-AU",{
+      day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"
+    });
+  } catch { return iso; }
+}
+
+// ── Start ──────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
