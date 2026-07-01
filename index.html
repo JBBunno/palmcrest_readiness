@@ -3,890 +3,2383 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shutdown Checklist — Palm Crest</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Palm Crest SRD</title>
 <style>
-:root {
-  --navy:    #0b1c33;
-  --gold:    #c19c4b;
-  --gold-lt: #d4b472;
-  --gold-dk: #8a6e32;
-  --white:   #ffffff;
-  --off:     #f4f2ed;
-  --text:    #1a1a1a;
-  --muted:   #6b6b6b;
-  --border:  #ddd8ce;
-  --success: #2d7a4f;
-  --radius:  6px;
-  --card-r:  10px;
-  --admin:   #7c3aed;
-  --admin-lt:#ede9fe;
-  --admin-bd:#c4b5fd;
+/* ── Reset & base ── */
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --navy:#0d1e35;
+  --navy-mid:#162a47;
+  --navy-light:#1e3a5f;
+  --teal:#5ab4d4;
+  --teal-dark:#3a94b4;
+  --amber:#e89820;
+  --amber-dark:#c07810;
+  --green:#28a86e;
+  --red:#d94040;
+  --red-bg:#fdf0f0;
+  --amber-bg:#fdf6e8;
+  --green-bg:#eef9f4;
+  --text:#1a2535;
+  --text-secondary:#4a5a70;
+  --text-muted:#8494a8;
+  --border:#dde4ed;
+  --surface:#f4f6fa;
+  --white:#ffffff;
+  --radius:10px;
+  --shadow:0 1px 4px rgba(13,30,53,.08);
 }
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--off);color:var(--text);min-height:100vh}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--surface);color:var(--text);font-size:15px;line-height:1.5}
+
+/* ── App shell ── */
+.app{display:flex;flex-direction:column;height:100vh;max-width:480px;margin:0 auto;background:var(--white);position:relative}
+
 
 /* ── Top bar ── */
-.topbar{background:var(--navy);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:54px;position:sticky;top:0;z-index:100}
-.topbar-brand{display:flex;align-items:center;gap:10px}
-.topbar-logo{width:28px;height:28px;background:var(--gold);border-radius:4px;display:flex;align-items:center;justify-content:center}
-.topbar-logo svg{width:16px;height:16px}
-.topbar-name{color:var(--white);font-size:14px;font-weight:600;letter-spacing:0.02em}
-.topbar-sub{color:var(--gold);font-size:11px;letter-spacing:0.06em;text-transform:uppercase}
-.topbar-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.btn{padding:6px 14px;border-radius:var(--radius);font-size:12px;font-weight:500;cursor:pointer;border:none;transition:all 0.15s;letter-spacing:0.01em}
-.btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.8)}
-.btn-ghost:hover{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.4);color:var(--white)}
-.btn-gold{background:var(--gold);color:var(--navy);font-weight:600}
-.btn-gold:hover{background:var(--gold-lt)}
-.btn-sm{padding:4px 10px;font-size:11px}
-.btn-outline{background:transparent;border:1px solid var(--border);color:var(--muted)}
-.btn-outline:hover{border-color:var(--gold);color:var(--gold-dk)}
-.btn-admin{background:var(--admin);color:white;border:none}
-.btn-admin:hover{background:#6d28d9}
-.btn-admin-off{background:transparent;border:1px solid var(--admin-bd);color:var(--admin)}
-.btn-admin-off:hover{background:var(--admin-lt)}
+.topbar{background:var(--navy);color:var(--white);padding:12px 16px 10px;flex-shrink:0;display:flex;flex-direction:column;gap:6px}
+.topbar-row1{display:flex;align-items:center;justify-content:space-between}
+.app-title{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--teal);opacity:.9}
+.logout-btn{font-size:12px;color:rgba(255,255,255,.5);background:none;border:none;cursor:pointer;padding:2px 6px}
+.topbar-row2{display:flex;align-items:center;justify-content:space-between}
+.shut-name{font-size:18px;font-weight:700;color:var(--white);letter-spacing:-.01em}
+.weeks-pill{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--amber);color:var(--navy)}
+.topbar-row3{display:flex;align-items:center;justify-content:space-between}
+.readiness-label{font-size:11px;color:rgba(255,255,255,.5)}
+.readiness-bar-wrap{flex:1;height:4px;background:rgba(255,255,255,.15);border-radius:2px;margin:0 10px}
+.readiness-bar{height:4px;border-radius:2px;background:var(--amber);transition:width .4s}
+.readiness-pct{font-size:12px;font-weight:600;color:var(--amber)}
+.user-chip{display:flex;align-items:center;gap:5px;font-size:11px;color:rgba(255,255,255,.6)}
+.user-dot{width:6px;height:6px;border-radius:50%;background:var(--teal)}
 
-/* admin mode banner */
-.admin-banner{display:none;background:var(--admin);color:white;text-align:center;padding:6px 12px;font-size:12px;font-weight:500;letter-spacing:0.02em}
-.admin-banner.on{display:block}
+/* ── Nav tabs ── */
+.nav{display:flex;background:var(--navy-mid);border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;overflow-x:auto}
+.nav::-webkit-scrollbar{display:none}
+.nav-tab{flex:1;min-width:60px;padding:10px 4px 8px;font-size:11px;font-weight:500;color:rgba(255,255,255,.45);text-align:center;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;letter-spacing:.02em;display:flex;flex-direction:column;align-items:center;gap:3px}
+.nav-tab svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav-tab.active{color:var(--teal);border-bottom-color:var(--teal)}
 
-/* ── Layout ── */
-.shell{display:flex;min-height:calc(100vh - 54px)}
-.sidebar{width:260px;background:var(--white);border-right:1px solid var(--border);flex-shrink:0;display:flex;flex-direction:column}
-.main{flex:1;padding:1.5rem;min-width:0}
+/* ── Views ── */
+.views{flex:1;overflow:hidden;position:relative}
+.view{position:absolute;inset:0;overflow-y:auto;display:none}
+.view.active{display:block}
 
-/* ── Sidebar ── */
-.sidebar-hd{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.sidebar-hd h3{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted)}
-.project-list{flex:1;overflow-y:auto}
-.project-item{padding:11px 16px;border-bottom:1px solid var(--border);cursor:pointer;display:flex;align-items:center;gap:10px;transition:background 0.12s}
-.project-item:hover{background:var(--off)}
-.project-item.active{background:#f0ead8;border-left:3px solid var(--gold);padding-left:13px}
-.proj-name{font-size:13px;font-weight:500;color:var(--text);flex:1;line-height:1.3}
-.proj-pct{font-size:11px;font-weight:600;color:var(--muted)}
-.project-item.active .proj-pct{color:var(--gold-dk)}
-.sidebar-ft{padding:12px 16px;border-top:1px solid var(--border)}
+/* ── Dashboard ── */
+.metrics-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:14px}
+.metric-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px}
+.metric-label{font-size:11px;color:var(--text-muted);margin-bottom:4px;font-weight:500;letter-spacing:.03em;text-transform:uppercase}
+.metric-val{font-size:26px;font-weight:700;letter-spacing:-.02em}
+.metric-val.warning{color:var(--amber-dark)}
+.metric-val.danger{color:var(--red)}
+.metric-val.success{color:var(--green)}
+.metric-val.neutral{color:var(--navy)}
+.metric-sub{font-size:11px;color:var(--text-muted);margin-top:1px}
 
-/* ── Modals ── */
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200;align-items:center;justify-content:center}
-.modal-bg.open{display:flex}
-.modal{background:var(--white);border-radius:var(--card-r);padding:24px;width:360px;box-shadow:0 8px 32px rgba(0,0,0,0.18)}
-.modal h3{font-size:15px;font-weight:600;margin-bottom:6px;color:var(--navy)}
-.modal p.sub{font-size:12px;color:var(--muted);margin-bottom:16px}
-.modal input{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:14px;margin-bottom:12px;outline:none;font-family:inherit}
-.modal input:focus{border-color:var(--gold)}
-.modal input.admin-input:focus{border-color:var(--admin)}
-.modal-btns{display:flex;gap:8px;justify-content:flex-end}
-.modal-err{font-size:12px;color:#c0392b;margin-bottom:10px;display:none}
-.modal-err.show{display:block}
+.section-label{padding:12px 14px 6px;font-size:11px;font-weight:600;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase}
 
-/* ── Page header ── */
-.page-hd{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.25rem;gap:12px;flex-wrap:wrap}
-.page-hd-left h2{font-size:18px;font-weight:600;color:var(--navy);margin-bottom:2px}
-.page-hd-left p{font-size:12px;color:var(--muted)}
+.kpi-card{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:10px 12px;display:flex;align-items:center;gap:10px}
+.kpi-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.kpi-dot.overdue{background:var(--red)}
+.kpi-dot.soon{background:var(--amber)}
+.kpi-dot.ok{background:var(--green)}
+.kpi-dot.future{background:var(--border)}
+.kpi-info{flex:1;min-width:0}
+.kpi-name{font-size:13px;font-weight:500;color:var(--text)}
+.kpi-cat{font-size:11px;color:var(--text-muted)}
+.kpi-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.kpi-badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px}
+.kpi-badge.overdue{background:var(--red-bg);color:var(--red)}
+.kpi-badge.soon{background:var(--amber-bg);color:var(--amber-dark)}
+.kpi-badge.ok{background:var(--green-bg);color:var(--green)}
+.kpi-badge.future{background:var(--surface);color:var(--text-muted)}
+.kpi-week{font-size:10px;color:var(--text-muted)}
 
-/* ── Summary bar ── */
-.summary-bar{background:var(--white);border:1px solid var(--border);border-radius:var(--card-r);padding:14px 18px;margin-bottom:1.25rem;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-.summary-stat{text-align:center}
-.summary-stat .val{font-size:20px;font-weight:700;color:var(--navy);line-height:1}
-.summary-stat .lbl{font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin-top:2px}
-.summary-divider{width:1px;height:36px;background:var(--border)}
-.progress-track{flex:1;height:8px;background:var(--off);border-radius:4px;overflow:hidden;min-width:120px}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold-dk),var(--gold));border-radius:4px;transition:width 0.4s ease}
-
-/* ── Phase legend ── */
-.phase-legend{display:flex;gap:12px;margin-bottom:1.25rem;flex-wrap:wrap}
-.ph-badge{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);font-weight:500}
-.ph-dot{width:8px;height:8px;border-radius:50%}
-
-/* ── Week cards ── */
-.weeks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
-.week-card{background:var(--white);border:1px solid var(--border);border-radius:var(--card-r);overflow:hidden;transition:box-shadow 0.15s,border-color 0.15s}
-.week-card:hover{box-shadow:0 2px 12px rgba(0,0,0,0.07)}
-.week-card.done{border-color:#a3c9a8}
-.week-card.admin-mode{border-color:var(--admin-bd)}
-.week-hd{padding:10px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
-.week-num-badge{font-size:10px;font-weight:700;letter-spacing:0.04em;padding:2px 7px;border-radius:4px;white-space:nowrap;text-transform:uppercase}
-.ph-1 .week-num-badge{background:#e8f5ee;color:#1e6b3c}
-.ph-2 .week-num-badge{background:#fff3e0;color:#8a4500}
-.ph-3 .week-num-badge{background:#e8eef8;color:#1a3a6e}
-.ph-4 .week-num-badge{background:#fdecea;color:#9b2020}
-.week-title-txt{font-size:12px;font-weight:600;color:var(--text);flex:1}
-.week-title-input{font-size:12px;font-weight:600;color:var(--navy);flex:1;border:1px solid var(--admin-bd);border-radius:4px;padding:2px 6px;background:var(--admin-lt);outline:none;font-family:inherit}
-.week-title-input:focus{border-color:var(--admin)}
-.week-pct{font-size:11px;color:var(--muted);font-weight:500}
-.week-card.done .week-pct{color:var(--success)}
-.week-body{padding:8px 12px}
-
-/* ── Task rows (normal) ── */
-.task-row{display:flex;align-items:flex-start;gap:8px;padding:5px 0;border-bottom:1px solid #f0ede6;cursor:pointer;transition:background 0.1s}
-.task-row:last-child{border-bottom:none}
-.task-row:hover{background:#faf8f4;margin:0 -12px;padding-left:12px;padding-right:12px}
-.cb{width:15px;height:15px;border:1.5px solid #ccc;border-radius:3px;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:all 0.15s;background:var(--white)}
-.cb.checked{background:var(--gold-dk);border-color:var(--gold-dk)}
-.cb.checked::after{content:'';display:block;width:8px;height:5px;border-left:2px solid white;border-bottom:2px solid white;transform:rotate(-45deg);margin-top:-1px}
-.task-txt{font-size:12px;color:#444;line-height:1.4;flex:1}
-.task-txt.done-txt{color:#aaa;text-decoration:line-through}
-.task-ts{font-size:10px;color:var(--muted);margin-top:1px;display:block}
-
-/* ── Task rows (admin) ── */
-.task-edit-row{display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid #f0ede6}
-.task-edit-row:last-child{border-bottom:none}
-.task-edit-input{flex:1;font-size:12px;padding:4px 8px;border:1px solid var(--admin-bd);border-radius:4px;background:var(--admin-lt);outline:none;color:var(--text);font-family:inherit}
-.task-edit-input:focus{border-color:var(--admin)}
-.task-del-btn{width:20px;height:20px;border-radius:3px;border:1px solid #fca5a5;background:#fee2e2;color:#dc2626;cursor:pointer;font-size:13px;line-height:1;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:0}
-.task-del-btn:hover{background:#dc2626;color:white;border-color:#dc2626}
-.task-add-row{margin-top:6px;display:flex;gap:6px}
-.task-add-input{flex:1;font-size:12px;padding:4px 8px;border:1px dashed var(--admin-bd);border-radius:4px;background:white;outline:none;font-family:inherit;color:var(--muted)}
-.task-add-input:focus{border-color:var(--admin);color:var(--text)}
-.task-add-btn{padding:4px 8px;border-radius:4px;border:none;background:var(--admin);color:white;font-size:11px;cursor:pointer;white-space:nowrap}
-.task-add-btn:hover{background:#6d28d9}
-.save-indicator{font-size:10px;color:var(--admin);opacity:0;transition:opacity 0.3s;margin-left:4px}
-.save-indicator.show{opacity:1}
-
-/* ── Empty / loading ── */
-.empty{padding:3rem 2rem;text-align:center;color:var(--muted)}
-.empty h3{font-size:15px;font-weight:500;margin-bottom:6px;color:var(--navy)}
-.empty p{font-size:12px}
-.spinner{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 12px}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* ── Report ── */
-.report-modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto}
-.report-modal-bg.open{display:flex}
-.report-box{background:var(--white);border-radius:var(--card-r);width:100%;max-width:680px;margin:auto}
-.report-header{background:var(--navy);color:var(--white);padding:20px 24px;border-radius:var(--card-r) var(--card-r) 0 0;display:flex;align-items:flex-start;justify-content:space-between}
-.report-header h2{font-size:17px;font-weight:600}
-.report-header p{font-size:11px;color:rgba(255,255,255,0.6);margin-top:3px}
-.report-body{padding:20px 24px}
-.report-section{margin-bottom:20px}
-.report-section h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
-.report-week-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}
-.report-week-label{font-size:12px;font-weight:500;color:var(--navy);width:160px;flex-shrink:0}
-.report-track{flex:1;height:6px;background:var(--off);border-radius:3px;overflow:hidden}
-.report-fill{height:100%;background:var(--gold-dk);border-radius:3px}
-.report-pct{font-size:11px;font-weight:600;color:var(--muted);width:36px;text-align:right;flex-shrink:0}
-.incomplete-item{display:flex;gap:8px;font-size:12px;color:var(--text);padding:5px 0;border-bottom:1px solid #f5f3ee}
-.incomplete-item:last-child{border-bottom:none}
-.incomplete-week{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--muted);width:60px;flex-shrink:0;padding-top:1px}
-.report-footer{padding:14px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
-
-/* ── Hamburger (mobile only) ── */
-.btn-hamburger{display:none;flex-direction:column;justify-content:center;gap:4px;width:36px;height:36px;padding:6px;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:var(--radius);cursor:pointer;flex-shrink:0}
-.btn-hamburger span{display:block;height:2px;background:var(--white);border-radius:2px;transition:all 0.2s}
-.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:150}
-.sidebar-overlay.open{display:block}
-
-/* ── Print ── */
-@media print{
-  .topbar,.sidebar,.page-hd-right,.report-footer,.modal-bg,.report-modal-bg .btn,.admin-banner,.btn-hamburger,.sidebar-overlay{display:none!important}
-  .shell{display:block}
-  .main{padding:0}
-  .report-box{max-width:100%;box-shadow:none;border:none}
-  .report-modal-bg{position:static!important;display:block!important;padding:0!important;background:none!important}
-  .report-header{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  body{background:white}
+/* ── KPI tile cards — expanded by default, tap to collapse ── */
+.kpi-list{display:grid;grid-template-columns:1fr;gap:8px;padding:0 14px 14px}
+.kpi-card{
+  background:var(--white);border:1px solid var(--border);border-radius:var(--radius);
+  overflow:hidden;cursor:pointer;transition:box-shadow .15s;
+}
+.kpi-card:active{background:var(--surface)}
+.kpi-card-header{display:flex;align-items:center;gap:10px;padding:10px 12px}
+.kpi-expand-body{border-top:1px solid var(--border);padding:10px 12px 12px}
+.kpi-card.collapsed .kpi-expand-body{display:none}
+.kpi-progress-wrap{height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:10px}
+.kpi-progress-fill{height:5px;border-radius:3px;transition:width .4s}
+.kpi-days-line{font-size:12px;color:var(--text-secondary);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.kpi-pct-label{font-size:13px;font-weight:700}
+.kpi-linked-tasks{display:flex;flex-direction:column;gap:4px}
+.kpi-linked-task{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:0.5px solid var(--border)}
+.kpi-linked-task:last-child{border-bottom:none}
+.klt-check{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.klt-check.done{background:var(--green);border-color:var(--green)}
+.klt-check.behind{background:var(--red);border-color:var(--red)}
+.klt-check svg{width:9px;height:9px;stroke:white;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.klt-info{flex:1;min-width:0}
+.klt-desc{font-size:12px;color:var(--text)}
+.klt-role{font-size:10px;color:var(--text-muted)}
+.klt-who{font-size:10px;color:var(--teal-dark)}
+.kpi-no-tasks{font-size:12px;color:var(--text-muted);padding:4px 0;font-style:italic}
+.kpi-chevron{font-size:10px;color:var(--text-muted);margin-left:auto;transition:transform .2s;flex-shrink:0}
+.kpi-card.collapsed .kpi-chevron{transform:rotate(-90deg)}
+/* Desktop: 2-col KPI grid, 3-col metrics */
+@media(min-width:768px){
+  .kpi-list{grid-template-columns:repeat(2,1fr);padding:0 20px 20px}
+  .metrics-grid{grid-template-columns:repeat(4,1fr);padding:16px 20px}
+  .section-label{padding:14px 20px 8px}
 }
 
-/* ── Mobile ── */
-@media(max-width:680px){
-  .btn-hamburger{display:flex}
-  .topbar{padding:0 1rem}
-  .topbar-sub{display:none}
-  .sidebar{
-    position:fixed;top:0;bottom:0;left:0;
-    width:280px;z-index:160;
-    transform:translateX(-100%);
-    transition:transform 0.25s ease;
-    box-shadow:4px 0 20px rgba(0,0,0,0.15);
+/* ── Visual Dashboard ── */
+.dash-page{padding:14px;display:flex;flex-direction:column;gap:14px}
+.dash-header-card{
+  background:var(--white);border:1px solid var(--border);border-radius:var(--radius);
+  overflow:hidden;
+}
+.dash-title-bar{
+  background:var(--navy);color:var(--white);padding:12px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.dash-title-name{font-size:22px;font-weight:700;letter-spacing:-.01em}
+.dash-title-logo{font-size:16px;font-weight:300;letter-spacing:.08em;color:var(--teal)}
+.dash-title-logo strong{font-weight:300;color:var(--white)}
+.dash-info-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border)}
+.dash-info-cell{background:var(--white);display:flex;flex-direction:column}
+.dash-info-cell-label{
+  background:var(--navy);color:var(--white);font-size:12px;font-weight:600;
+  padding:9px 12px;
+}
+.dash-info-cell-val{
+  font-size:14px;font-weight:700;color:var(--text);padding:9px 12px;
+  display:flex;align-items:center;
+}
+.dash-measure-cell .dash-info-cell-val{font-size:20px;justify-content:flex-start}
+.dash-measure-cell.dash-actual-cell .dash-info-cell-val{color:var(--red)}
+.dash-measure-cell.dash-actual-cell.on-pace .dash-info-cell-val{color:var(--green)}
+.dash-measure-cell.dash-target-cell .dash-info-cell-val{color:var(--green);font-size:18px}
+@media(max-width:600px){
+  .dash-info-grid{grid-template-columns:1fr 1fr 1fr;font-size:11px}
+  .dash-info-cell-label{padding:6px 8px;font-size:10px}
+  .dash-info-cell-val{padding:6px 8px;font-size:12px}
+  .dash-measure-cell .dash-info-cell-val{font-size:15px}
+  .dash-title-name{font-size:16px}
+}
+
+.dash-phases{display:flex;gap:2px}
+.dash-phase{
+  flex:1;padding:8px 4px;text-align:center;font-size:12px;font-weight:700;color:var(--white);
+  position:relative;clip-path:polygon(0 0,92% 0,100% 50%,92% 100%,0 100%,8% 50%);
+}
+.dash-phase:first-child{clip-path:polygon(0 0,92% 0,100% 50%,92% 100%,0 100%)}
+
+.dash-kpi-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:1px;background:var(--border);border-radius:8px;overflow:hidden}
+.dash-kpi-cell{background:var(--white);padding:8px 8px;display:flex;flex-direction:column;gap:2px}
+.dash-kpi-cell-name{font-size:10.5px;color:var(--text);font-weight:600;line-height:1.2}
+.dash-kpi-cell-meta{display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted)}
+.dash-kpi-cell-bar{height:4px;border-radius:2px;background:var(--border);margin-top:2px;overflow:hidden}
+.dash-kpi-cell-fill{height:4px;border-radius:2px}
+.dash-kpi-cell.overdue{background:#fdf0f0}
+.dash-kpi-cell.soon{background:#fdf6e8}
+.dash-kpi-cell.ok{background:#eef9f4}
+
+.dash-section-title{font-size:12px;font-weight:700;color:var(--navy);letter-spacing:.02em;padding:4px 0}
+
+.dash-timeline-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.dash-timeline-scroll{overflow-x:auto}
+.gantt-table,.dash-timeline-table{border-collapse:collapse;width:100%;font-size:11px}
+.dash-timeline-table th,.dash-timeline-table td{padding:5px 6px;border:1px solid var(--border);text-align:center;white-space:nowrap}
+.dash-timeline-table th{background:var(--navy);color:var(--white);font-weight:600;font-size:10px}
+.dash-timeline-table td.role-label{text-align:left;font-weight:600;color:var(--navy);background:var(--surface);position:sticky;left:0}
+.dash-timeline-cell{font-weight:700;border-radius:3px}
+
+.dash-bottom-grid{display:flex;flex-direction:column;gap:14px}
+.dash-action-card,.dash-curve-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+.dash-pie-row{display:flex;align-items:center;gap:16px}
+.dash-pie-legend{display:flex;flex-direction:column;gap:6px}
+.dash-legend-item{font-size:13px;color:var(--text-secondary);display:flex;align-items:center;gap:6px}
+.dash-legend-item strong{color:var(--text);margin-left:2px}
+.dash-legend-dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+
+@media(min-width:768px){
+  .dash-page{max-width:1100px;margin:0 auto}
+  .dash-bottom-grid{flex-direction:row}
+  .dash-action-card{flex:0 0 320px}
+  .dash-curve-card{flex:1}
+}
+
+/* ── Gantt-style Checklist ── */
+.checklist-toolbar{display:flex;align-items:center;border-bottom:1px solid var(--border);background:var(--white)}
+.range-edit-toggle{
+  display:flex;align-items:center;gap:6px;flex-shrink:0;margin:6px 10px 6px 0;
+  font-size:12px;font-weight:600;padding:6px 12px;border-radius:20px;
+  border:1px solid var(--border);background:var(--white);color:var(--text-secondary);cursor:pointer;
+}
+.range-edit-toggle svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.range-edit-toggle.active{background:var(--amber);border-color:var(--amber);color:var(--navy)}
+.range-edit-hint{padding:8px 14px;background:var(--amber-bg);color:var(--amber-dark);font-size:12px;line-height:1.4;border-bottom:1px solid var(--border)}
+.gantt-week-cell.range-target{background:#eef4fb}
+.gantt-week-cell.range-pending-start{box-shadow:inset 0 0 0 2px var(--amber);background:var(--amber-bg)}
+
+.gantt-scroll-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.gantt-table{min-width:600px}
+.gantt-table th{background:var(--navy);color:var(--white);font-size:10px;font-weight:600;padding:6px 4px;border:1px solid rgba(255,255,255,.1);position:sticky;top:0;z-index:3}
+.gantt-table th.gantt-task-header{text-align:left;min-width:220px;position:sticky;left:0;z-index:4;background:var(--navy)}
+.gantt-table th.gantt-week-header{min-width:34px;text-align:center}
+.gantt-table th.gantt-week-header.gantt-current{background:var(--amber-dark)}
+.gantt-role-row td{background:var(--surface);font-weight:700;font-size:11px;color:var(--navy);padding:6px 8px;border:1px solid var(--border);position:sticky;left:0}
+.gantt-task-row td.gantt-task-name{
+  text-align:left;font-size:11.5px;color:var(--text);padding:5px 8px;border:1px solid var(--border);
+  position:sticky;left:0;background:var(--white);min-width:220px;max-width:260px;
+  white-space:normal;line-height:1.3;
+}
+.gantt-task-row:hover td.gantt-task-name{background:var(--surface)}
+.gantt-week-cell{
+  border:1px solid var(--border);text-align:center;cursor:pointer;min-width:34px;height:30px;
+  transition:background .1s;position:relative;
+}
+.gantt-week-cell:hover{background:var(--surface)}
+.gantt-week-cell.in-range{background:#d6e8f5}
+.gantt-week-cell.done{background:var(--green);color:white}
+.gantt-week-cell.behind{background:var(--red);color:white}
+.gantt-week-cell.current-week{box-shadow:inset 0 0 0 2px var(--amber)}
+.gantt-week-cell svg{width:12px;height:12px;stroke:white;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;margin:0 auto}
+.gantt-readonly{cursor:default;opacity:.6}
+
+/* ── Checklist ── */
+.role-filter-wrap{padding:10px 14px;display:flex;gap:6px;overflow-x:auto;border-bottom:1px solid var(--border);background:var(--white);position:sticky;top:0;z-index:5}
+.role-filter-wrap::-webkit-scrollbar{display:none}
+.role-chip{font-size:12px;font-weight:500;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:var(--white);color:var(--text-secondary);cursor:pointer;white-space:nowrap;transition:all .12s}
+.role-chip.active{background:var(--navy);color:var(--white);border-color:var(--navy)}
+
+.task-group-header{padding:8px 14px;background:var(--surface);border-bottom:1px solid var(--border);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:49px;z-index:4}
+.task-group-header:first-child{border-top:none}
+.tgh-name{font-size:12px;font-weight:600;color:var(--navy);letter-spacing:.01em}
+.tgh-progress{display:flex;align-items:center;gap:8px}
+.tgh-bar-wrap{width:60px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.tgh-bar{height:4px;border-radius:2px;background:var(--teal)}
+.tgh-pct{font-size:11px;color:var(--text-muted)}
+
+.task-item{display:flex;align-items:center;padding:11px 14px;border-bottom:1px solid var(--border);gap:11px;cursor:pointer;background:var(--white);transition:background .1s;-webkit-user-select:none;user-select:none}
+.task-item:active{background:var(--surface)}
+.task-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.task-check.done{background:var(--green);border-color:var(--green)}
+.task-check.behind{background:var(--red);border-color:var(--red)}
+.task-check svg{width:11px;height:11px;stroke:white;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.task-body{flex:1;min-width:0}
+.task-title{font-size:13px;color:var(--text);line-height:1.35}
+.task-title.done-text{text-decoration:line-through;color:var(--text-muted)}
+.task-meta{font-size:11px;color:var(--text-muted);margin-top:2px;display:flex;align-items:center;gap:6px}
+.kpi-tag{font-size:10px;padding:1px 6px;border-radius:4px;background:rgba(90,180,212,.12);color:var(--teal-dark);font-weight:500}
+.week-badge{font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px;background:var(--surface);color:var(--text-secondary);flex-shrink:0;white-space:nowrap}
+.week-badge.overdue{background:var(--red-bg);color:var(--red)}
+
+/* ── Actions ── */
+.actions-header{display:flex;align-items:center;padding:10px 14px;gap:8px;border-bottom:1px solid var(--border);background:var(--white);position:sticky;top:0;z-index:5}
+.actions-header select{flex:1;font-size:13px;padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--white);color:var(--text)}
+.add-action-btn{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:7px 12px;border-radius:8px;background:var(--navy);color:var(--white);border:none;cursor:pointer;white-space:nowrap;flex-shrink:0}
+
+.action-card{margin:10px 14px;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--white)}
+.action-card-body{padding:11px 13px}
+.action-priority-row{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.priority-dot{width:6px;height:6px;border-radius:50%}
+.priority-dot.high{background:var(--red)}
+.priority-dot.medium{background:var(--amber)}
+.priority-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.priority-label.high{color:var(--red)}
+.priority-label.medium{color:var(--amber-dark)}
+.action-text{font-size:13px;color:var(--text);line-height:1.4}
+.action-footer{padding:8px 13px;background:var(--surface);border-top:1px solid var(--border);display:flex;align-items:center;gap:12px;font-size:11px;color:var(--text-muted);flex-wrap:wrap}
+.action-footer strong{color:var(--text-secondary)}
+.overdue-tag{margin-left:auto;background:var(--red-bg);color:var(--red);font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px}
+.complete-action-btn{margin-left:auto;display:flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:5px 10px;border-radius:20px;background:var(--green);color:white;border:none;cursor:pointer}
+.complete-action-btn svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.action-delete-btn{margin-left:auto;width:24px;height:24px;border-radius:50%;border:none;background:var(--red-bg);color:var(--red);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.action-delete-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.action-delete-btn:hover{background:var(--red);color:white}
+.action-card.action-closed{opacity:.6}
+.action-done-badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;background:var(--green-bg);color:var(--green);margin-left:6px}
+
+/* ── Progress ── */
+.prog-summary{padding:14px;display:flex;flex-direction:column;gap:10px}
+.role-row{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px}
+.role-row-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.role-row-name{font-size:13px;font-weight:600;color:var(--navy)}
+.role-row-pct{font-size:14px;font-weight:700}
+.role-row-pct.danger{color:var(--red)}
+.role-row-pct.warning{color:var(--amber-dark)}
+.role-row-pct.success{color:var(--green)}
+.role-row-pct-group{display:flex;align-items:baseline;gap:4px}
+.role-row-target{font-size:11px;color:var(--text-muted);font-weight:500}
+.role-bar-wrap{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:6px;position:relative}
+.role-bar{height:6px;border-radius:3px;transition:width .5s}
+.role-bar-target-marker{position:absolute;top:-1px;width:2px;height:8px;background:var(--navy);transform:translateX(-1px)}
+.role-row-meta{display:flex;gap:12px;font-size:11px;color:var(--text-muted)}
+.role-row-meta span strong{color:var(--text-secondary)}
+
+/* ── Login ── */
+.login-screen{position:fixed;inset:0;background:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;padding:24px}
+.login-logo{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:8px;font-weight:600}
+.login-title{font-size:24px;font-weight:700;color:var(--white);margin-bottom:4px;text-align:center}
+.login-sub{font-size:13px;color:rgba(255,255,255,.45);margin-bottom:36px;text-align:center}
+.pin-display{display:flex;gap:10px;margin-bottom:28px}
+.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.25);transition:all .15s}
+.pin-dot.filled{background:var(--teal);border-color:var(--teal)}
+.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:220px}
+.pin-key{height:60px;background:var(--navy-mid);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);font-size:22px;font-weight:500;color:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .1s;-webkit-user-select:none;user-select:none}
+.pin-key:active{background:var(--navy-light)}
+.pin-key.delete{font-size:16px;color:rgba(255,255,255,.5)}
+.pin-error{color:var(--red);font-size:13px;margin-top:14px;text-align:center;min-height:20px}
+
+/* ── Modal (add action) ── */
+.modal-overlay{position:absolute;inset:0;background:rgba(13,30,53,.55);display:none;align-items:flex-end;z-index:50}
+.modal-overlay.open{display:flex}
+.modal-sheet{background:var(--white);border-radius:16px 16px 0 0;padding:20px 16px 32px;width:100%;display:flex;flex-direction:column;gap:12px}
+.modal-title{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.modal-sheet label{font-size:12px;font-weight:600;color:var(--text-muted);letter-spacing:.04em;text-transform:uppercase;display:block;margin-bottom:4px}
+.modal-sheet input,.modal-sheet select,.modal-sheet textarea{width:100%;font-size:14px;padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--white);color:var(--text);font-family:inherit}
+.modal-sheet textarea{resize:none;height:72px;line-height:1.4}
+.modal-btns{display:flex;gap:8px;margin-top:4px}
+.modal-cancel{flex:1;padding:12px;border:1px solid var(--border);border-radius:8px;background:var(--white);font-size:14px;color:var(--text-secondary);cursor:pointer;font-weight:500}
+.modal-save{flex:2;padding:12px;border:none;border-radius:8px;background:var(--navy);font-size:14px;color:var(--white);cursor:pointer;font-weight:600}
+
+/* ── Spinner / states ── */
+/* ── Report tab ── */
+.report-page{padding:14px;display:flex;flex-direction:column;gap:14px}
+.report-generate-card{background:var(--navy);border-radius:var(--radius);padding:18px 16px;display:flex;flex-direction:column;gap:10px}
+.report-gen-title{font-size:15px;font-weight:700;color:var(--white)}
+.report-gen-sub{font-size:12px;color:rgba(255,255,255,.5);line-height:1.5}
+.report-audience-row{display:flex;gap:6px}
+.audience-btn{flex:1;padding:7px 4px;border-radius:8px;border:1px solid rgba(255,255,255,.15);background:transparent;color:rgba(255,255,255,.6);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;text-align:center}
+.audience-btn.active{background:var(--teal);border-color:var(--teal);color:var(--navy)}
+.generate-btn{padding:13px;border:none;border-radius:8px;background:var(--amber);color:var(--navy);font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .15s}
+.generate-btn:disabled{opacity:.5;cursor:not-allowed}
+.generate-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.report-output{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;display:none}
+.report-output.visible{display:block}
+.report-output-header{padding:10px 14px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.report-output-title{font-size:12px;font-weight:600;color:var(--navy);letter-spacing:.04em;text-transform:uppercase}
+.report-export-btn{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:6px 12px;border-radius:8px;background:var(--navy);color:var(--white);border:none;cursor:pointer}
+.report-export-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.report-body{padding:16px;font-size:13px;color:var(--text);line-height:1.7}
+.report-body h2{font-size:14px;font-weight:700;color:var(--navy);margin:16px 0 6px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.report-body h2:first-child{margin-top:0}
+.report-body h3{font-size:13px;font-weight:600;color:var(--navy);margin:10px 0 4px}
+.report-body p{margin-bottom:8px}
+.report-body ul{margin:0 0 8px 18px}
+.report-body li{margin-bottom:3px}
+.report-body .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}
+.report-body .stat-box{background:var(--surface);border-radius:8px;padding:8px 10px}
+.report-body .stat-val{font-size:18px;font-weight:700;color:var(--navy)}
+.report-body .stat-lbl{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em}
+.report-body .tag{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;margin-right:4px;margin-bottom:3px}
+.report-body .tag.red{background:var(--red-bg);color:var(--red)}
+.report-body .tag.amber{background:var(--amber-bg);color:var(--amber-dark)}
+.report-body .tag.green{background:var(--green-bg);color:var(--green)}
+.report-body .tag.grey{background:var(--surface);color:var(--text-muted)}
+.report-streaming{padding:16px;font-size:13px;color:var(--text-muted);line-height:1.7;white-space:pre-wrap}
+.report-error{padding:16px;color:var(--red);font-size:13px}
+.typing-dots{display:inline-flex;gap:3px;align-items:center;margin-left:4px}
+.typing-dots span{width:5px;height:5px;border-radius:50%;background:var(--teal);animation:bounce .9s infinite}
+.typing-dots span:nth-child(2){animation-delay:.15s}
+.typing-dots span:nth-child(3){animation-delay:.3s}
+@keyframes bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-5px)}}
+
+/* ── Task editor ── */
+.task-editor-filter{display:flex;gap:6px;padding:10px 14px;overflow-x:auto;border-bottom:1px solid var(--border)}
+.task-editor-filter::-webkit-scrollbar{display:none}
+.te-role-btn{font-size:12px;font-weight:500;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--white);color:var(--text-secondary);cursor:pointer;white-space:nowrap}
+.te-role-btn.active{background:var(--navy);color:var(--white);border-color:var(--navy)}
+.task-editor-list{display:flex;flex-direction:column}
+.te-task-row{display:flex;align-items:flex-start;padding:10px 14px;border-bottom:1px solid var(--border);gap:8px;background:var(--white)}
+.te-task-row:hover{background:var(--surface)}
+.te-drag{color:var(--text-muted);font-size:16px;cursor:grab;padding-top:2px;flex-shrink:0;user-select:none}
+.te-task-body{flex:1;display:flex;flex-direction:column;gap:6px;min-width:0}
+.te-desc{font-size:13px;padding:5px 8px;border:1px solid var(--border);border-radius:6px;background:var(--white);color:var(--text);font-family:inherit;width:100%;resize:none;line-height:1.4}
+.te-desc:focus{outline:none;border-color:var(--teal)}
+.te-meta-row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.te-meta-row select,.te-meta-row input{font-size:12px;padding:4px 7px;border:1px solid var(--border);border-radius:6px;background:var(--white);color:var(--text);font-family:inherit}
+.te-meta-row input[type=number]{width:64px}
+.te-meta-label{font-size:11px;color:var(--text-muted);white-space:nowrap}
+.te-del-btn{width:26px;height:26px;border-radius:50%;border:none;background:var(--red-bg);color:var(--red);font-size:14px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.te-add-btn{margin:10px 14px;padding:9px;border:1.5px dashed var(--border);border-radius:8px;background:transparent;color:var(--text-muted);font-size:13px;cursor:pointer;width:calc(100% - 28px);display:flex;align-items:center;justify-content:center;gap:6px}
+.te-add-btn:hover{border-color:var(--teal);color:var(--teal)}
+.te-save-btn{margin:0 14px 14px;padding:12px;border:none;border-radius:8px;background:var(--navy);color:var(--white);font-size:14px;font-weight:600;cursor:pointer;width:calc(100% - 28px)}
+.te-save-btn.success{background:var(--green)}
+.te-task-id{font-size:10px;color:var(--text-muted);font-family:monospace}
+
+/* ── Reset progress section ── */
+.reset-section{border:1px solid var(--red);overflow:hidden}
+.reset-head{background:var(--red) !important;color:white}
+.reset-body{padding:14px}
+.reset-warning-text{font-size:12px;color:var(--text-secondary);line-height:1.6;margin-bottom:14px}
+.reset-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+  padding:12px;border:none;border-radius:8px;background:var(--red);color:white;
+  font-size:14px;font-weight:700;cursor:pointer;transition:background .15s;
+}
+.reset-btn:hover{background:#b83333}
+.reset-confirm-overlay{position:fixed;inset:0;background:rgba(13,30,53,.6);display:none;align-items:center;justify-content:center;z-index:300;padding:24px}
+.reset-confirm-overlay.open{display:flex}
+.reset-confirm-card{background:white;border-radius:14px;padding:24px;max-width:380px;width:100%;text-align:center}
+.reset-confirm-icon{width:48px;height:48px;border-radius:50%;background:var(--red-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.reset-confirm-icon svg{width:24px;height:24px;stroke:var(--red);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.reset-confirm-title{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.reset-confirm-text{font-size:13px;color:var(--text-secondary);line-height:1.5;margin-bottom:18px}
+.reset-confirm-input{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;text-align:center;margin-bottom:14px;font-family:inherit}
+.reset-confirm-btns{display:flex;gap:8px}
+.reset-confirm-cancel{flex:1;padding:11px;border:1px solid var(--border);border-radius:8px;background:white;color:var(--text-secondary);font-size:13px;font-weight:600;cursor:pointer}
+.reset-confirm-go{flex:1;padding:11px;border:none;border-radius:8px;background:var(--red);color:white;font-size:13px;font-weight:700;cursor:pointer}
+.reset-confirm-go:disabled{opacity:.4;cursor:not-allowed}
+
+/* ── Setup page ── */
+.setup-page{padding:14px;display:flex;flex-direction:column;gap:16px}
+.setup-section{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.setup-section-head{padding:10px 14px;background:var(--surface);border-bottom:1px solid var(--border);font-size:12px;font-weight:600;color:var(--navy);letter-spacing:.04em;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between}
+.setup-field{padding:11px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.setup-field:last-child{border-bottom:none}
+.setup-field label{font-size:13px;color:var(--text-secondary);flex:0 0 110px}
+.setup-field input{flex:1;font-size:14px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;background:var(--white);color:var(--text);font-family:inherit}
+.setup-field input:focus{outline:none;border-color:var(--teal)}
+.setup-save-btn{margin:0 14px 14px;padding:12px;border:none;border-radius:8px;background:var(--navy);color:var(--white);font-size:14px;font-weight:600;cursor:pointer;width:calc(100% - 28px);transition:background .15s}
+.setup-save-btn:active{background:var(--navy-light)}
+.setup-save-btn.success{background:var(--green)}
+.role-row-setup{padding:11px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.role-row-setup:last-child{border-bottom:none}
+.role-row-setup input.role-name{flex:1;font-size:13px;padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--white);color:var(--text);font-family:inherit}
+.role-row-setup input.role-pin{width:72px;font-size:13px;padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--white);color:var(--text);font-family:inherit;text-align:center;letter-spacing:.1em}
+.toggle-wrap{display:flex;align-items:center;gap:0;flex-shrink:0}
+.toggle{position:relative;width:40px;height:22px;cursor:pointer}
+.toggle input{opacity:0;width:0;height:0;position:absolute}
+.toggle-track{position:absolute;inset:0;border-radius:11px;background:var(--border);transition:background .2s}
+.toggle input:checked+.toggle-track{background:var(--teal)}
+.toggle-thumb{position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:var(--white);transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle input:checked~.toggle-thumb{transform:translateX(18px)}
+.add-role-btn{margin:10px 14px;padding:9px;border:1.5px dashed var(--border);border-radius:8px;background:transparent;color:var(--text-muted);font-size:13px;cursor:pointer;width:calc(100% - 28px);display:flex;align-items:center;justify-content:center;gap:6px;transition:border-color .15s,color .15s}
+.add-role-btn:hover{border-color:var(--teal);color:var(--teal)}
+.role-del-btn{width:24px;height:24px;border-radius:50%;border:none;background:var(--red-bg);color:var(--red);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.setup-note{font-size:11px;color:var(--text-muted);padding:8px 14px;border-top:1px solid var(--border);line-height:1.5}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--navy);color:var(--white);font-size:13px;font-weight:500;padding:10px 20px;border-radius:20px;z-index:200;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:1}
+
+.spinner-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;gap:12px;color:var(--text-muted);font-size:13px}
+.spinner{width:28px;height:28px;border:2.5px solid var(--border);border-top-color:var(--teal);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.empty-state{text-align:center;padding:40px 24px;color:var(--text-muted);font-size:13px}
+
+/* ── Utility ── */
+.hidden{display:none!important}
+
+@media(min-width:768px){
+  body{background:var(--navy-mid)}
+  .app{
+    max-width:100%;width:100%;height:100vh;
+    display:grid;
+    grid-template-rows:56px 1fr;
+    grid-template-columns:220px 1fr;
+    box-shadow:none;
   }
-  .sidebar.open{transform:translateX(0)}
-  .main{padding:1rem}
-  .weeks-grid{grid-template-columns:1fr}
-  .task-row{padding:8px 0;min-height:44px}
-  .cb{width:20px;height:20px;border-radius:4px}
-  .cb.checked::after{width:10px;height:6px}
-  .task-txt{font-size:13px}
-  .project-item{min-height:48px}
-  .modal{width:calc(100vw - 2rem);max-width:360px}
-  .report-modal-bg{padding:1rem 0.5rem}
+  /* Topbar — full width single row */
+  .topbar{
+    grid-column:1 / -1;
+    grid-row:1;
+    flex-direction:row;
+    align-items:center;
+    padding:0 20px;
+    gap:16px;
+    height:56px;
+  }
+  /* Dissolve the row wrappers — children become direct flex items of topbar */
+  .topbar-row1,.topbar-row2,.topbar-row3{display:contents}
+  /* Re-target the actual children */
+  .app-title{order:1;font-size:13px}
+  .logout-btn{order:6;margin-left:auto}
+  .shut-name{order:2;font-size:17px;font-weight:700}
+  .weeks-pill{order:3}
+  .user-chip{order:4}
+  .readiness-bar-wrap{order:5;width:120px;margin:0}
+  .readiness-pct{order:5;margin-left:0}
+  /* Side nav */
+  .nav{
+    grid-column:1;
+    grid-row:2;
+    flex-direction:column;
+    border-bottom:none;
+    border-right:1px solid rgba(255,255,255,.08);
+    background:var(--navy-mid);
+    overflow-y:auto;
+    overflow-x:hidden;
+    padding:8px 0;
+  }
+  .nav-tab{
+    flex:0 0 auto;
+    flex-direction:row;
+    justify-content:flex-start;
+    padding:13px 20px;
+    font-size:13px;
+    border-bottom:none;
+    border-left:3px solid transparent;
+    gap:12px;
+    text-align:left;
+    white-space:nowrap;
+  }
+  .nav-tab svg{width:17px;height:17px;flex-shrink:0}
+  .nav-tab.active{
+    border-left-color:var(--teal);
+    border-bottom-color:transparent;
+    background:rgba(90,180,212,.08);
+    color:var(--teal);
+  }
+  /* Content area */
+  .views{grid-column:2;grid-row:2;overflow:hidden;background:var(--surface)}
+  .view{position:absolute;inset:0;overflow-y:auto}
+  /* Wider layouts */
+  .metrics-grid{grid-template-columns:repeat(4,1fr);padding:16px 20px}
+  .kpi-list{grid-template-columns:repeat(2,1fr);padding:0 20px 20px}
+  .prog-summary{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;max-width:900px}
+  .section-label{padding:14px 20px 8px}
+  .setup-page{max-width:680px;margin:0 auto}
+  .report-page{max-width:860px;margin:0 auto}
+  .report-body .stat-grid{grid-template-columns:repeat(4,1fr)}
+  .action-card{max-width:860px;margin-left:auto;margin-right:auto}
 }
 </style>
 </head>
 <body>
 
-<div class="admin-banner" id="admin-banner">⚙ Admin mode active — you can edit tasks, titles and add/remove items. Changes save automatically.</div>
+<!-- LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-logo">Palm Crest</div>
+  <div class="login-title">Shutdown Readiness</div>
+  <div class="login-sub">Enter your PIN to continue</div>
+  <div class="pin-display" id="pinDisplay">
+    <div class="pin-dot" id="pd0"></div>
+    <div class="pin-dot" id="pd1"></div>
+    <div class="pin-dot" id="pd2"></div>
+    <div class="pin-dot" id="pd3"></div>
+  </div>
+  <div class="pin-pad">
+    <div class="pin-key" onclick="pinPress('1')">1</div>
+    <div class="pin-key" onclick="pinPress('2')">2</div>
+    <div class="pin-key" onclick="pinPress('3')">3</div>
+    <div class="pin-key" onclick="pinPress('4')">4</div>
+    <div class="pin-key" onclick="pinPress('5')">5</div>
+    <div class="pin-key" onclick="pinPress('6')">6</div>
+    <div class="pin-key" onclick="pinPress('7')">7</div>
+    <div class="pin-key" onclick="pinPress('8')">8</div>
+    <div class="pin-key" onclick="pinPress('9')">9</div>
+    <div class="pin-key" onclick="pinPress('')"></div>
+    <div class="pin-key" onclick="pinPress('0')">0</div>
+    <div class="pin-key delete" onclick="pinDelete()">⌫</div>
+  </div>
+  <div class="pin-error" id="pinError"></div>
+</div>
 
-<!-- Top bar -->
-<div class="topbar">
-  <button class="btn-hamburger" onclick="toggleSidebar()" aria-label="Menu">
-    <span></span><span></span><span></span>
-  </button>
-  <div class="topbar-brand">
-    <div class="topbar-logo">
-      <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="2" y="10" width="2" height="4" fill="#0b1c33"/>
-        <rect x="5" y="7" width="2" height="7" fill="#0b1c33"/>
-        <rect x="8" y="4" width="2" height="10" fill="#0b1c33"/>
-        <rect x="11" y="2" width="2" height="12" fill="#0b1c33"/>
-      </svg>
+<!-- MAIN APP -->
+<div class="app hidden" id="mainApp">
+
+  <div class="topbar">
+    <div class="topbar-row1">
+      <div class="app-title">Palm Crest SRD</div>
+      <button class="logout-btn" onclick="logout()">Sign out</button>
     </div>
-    <div>
-      <div class="topbar-name">Palm Crest</div>
-      <div class="topbar-sub">Scheduling Solutions</div>
+    <div class="topbar-row2">
+      <div class="shut-name" id="shutName">Loading…</div>
+      <div class="weeks-pill" id="weeksPill">W—</div>
+    </div>
+    <div class="topbar-row3">
+      <div class="user-chip"><div class="user-dot"></div><span id="userChip"></span></div>
+      <div style="display:flex;align-items:center;gap:6px;flex:1;margin:0 10px">
+        <div class="readiness-bar-wrap"><div class="readiness-bar" id="readinessBar" style="width:0%"></div></div>
+      </div>
+      <div class="readiness-pct" id="readinessPct">0%</div>
     </div>
   </div>
-  <div class="topbar-right">
-    <button class="btn btn-ghost btn-sm" onclick="openReport()" id="btn-report" style="display:none">Planning report</button>
-    <button class="btn btn-ghost btn-sm" onclick="confirmClear()" id="btn-clear" style="display:none">Clear checklist</button>
-    <button class="btn btn-admin-off btn-sm" onclick="promptAdmin()" id="btn-admin-on" style="color:rgba(255,255,255,0.6);border-color:rgba(255,255,255,0.2)">Admin</button>
-    <button class="btn btn-admin btn-sm" onclick="exitAdmin()" id="btn-admin-off" style="display:none">Exit admin</button>
-  </div>
-</div>
 
-<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
-<div class="shell">
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-hd"><h3>Shutdowns</h3></div>
-    <div class="project-list" id="project-list">
-      <div class="empty"><div class="spinner"></div><p>Loading…</p></div>
+  <div class="nav">
+    <div class="nav-tab active" onclick="showTab('dashboard',this)" id="tab-dashboard">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
     </div>
-    <div class="sidebar-ft">
-      <button class="btn btn-gold" style="width:100%" onclick="showNewProject()">+ New shutdown</button>
+    <div class="nav-tab" onclick="showTab('checklist',this)" id="tab-checklist">
+      <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Checklist
     </div>
-  </aside>
-  <main class="main" id="main">
-    <div class="empty" style="margin-top:4rem">
-      <h3>Select a shutdown</h3>
-      <p>Choose a project from the sidebar or create a new one.</p>
+    <div class="nav-tab" onclick="showTab('kpis',this)" id="tab-kpis">
+      <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      KPIs
     </div>
-  </main>
-</div>
-
-<!-- New project modal -->
-<div class="modal-bg" id="new-proj-modal">
-  <div class="modal">
-    <h3>New shutdown project</h3>
-    <input type="text" id="new-proj-name" placeholder="e.g. Talison Q3 2026" maxlength="60"
-      onkeydown="if(event.key==='Enter')createProject()">
-    <div class="modal-btns">
-      <button class="btn btn-outline" onclick="closeNewProject()">Cancel</button>
-      <button class="btn btn-gold" onclick="createProject()">Create</button>
+    <div class="nav-tab" onclick="showTab('actions',this)" id="tab-actions">
+      <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      Actions
+    </div>
+    <div class="nav-tab" onclick="showTab('progress',this)" id="tab-progress">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Progress
+    </div>
+    <div class="nav-tab hidden" onclick="showTab('setup',this)" id="tab-setup">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Setup
+    </div>
+    <div class="nav-tab hidden" onclick="showTab('report',this)" id="tab-report">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      Report
     </div>
   </div>
-</div>
 
-<!-- Admin password modal -->
-<div class="modal-bg" id="admin-modal">
-  <div class="modal">
-    <h3>Admin access</h3>
-    <p class="sub">Enter the admin password to edit tasks and week titles.</p>
-    <div class="modal-err" id="admin-err">Incorrect password. Try again.</div>
-    <input type="password" id="admin-pw-input" class="admin-input" placeholder="Password"
-      onkeydown="if(event.key==='Enter')checkAdminPw()">
-    <div class="modal-btns">
-      <button class="btn btn-outline" onclick="closeAdminModal()">Cancel</button>
-      <button class="btn btn-admin" onclick="checkAdminPw()">Unlock</button>
-    </div>
-  </div>
-</div>
+  <div class="views">
 
-<!-- Report modal -->
-<div class="report-modal-bg" id="report-modal">
-  <div class="report-box" id="report-box"></div>
-</div>
+    <!-- DASHBOARD — visual readiness report -->
+    <div class="view active" id="view-dashboard">
+      <div class="dash-page">
 
-<script>
-// ── CONFIG ────────────────────────────────────────────────
-const GAS_URL  = "https://script.google.com/macros/s/AKfycbxwGZd3yrDdHvYSnusre5-dNsbtdeH5qZtiw8928pcsVp6q3bgOzrv79zqYP5sWG-KT/exec";
-const ADMIN_PW = "PalmCrest1";
-// ─────────────────────────────────────────────────────────
+        <!-- Header block -->
+        <div class="dash-header-card">
+          <div class="dash-title-bar">
+            <div class="dash-title-name" id="dh-name">—</div>
+            <div class="dash-title-logo">PALM<strong>CREST</strong></div>
+          </div>
+          <div class="dash-info-grid">
+            <div class="dash-info-cell"><div class="dash-info-cell-label">Current Date</div><div class="dash-info-cell-val" id="dh-today">—</div></div>
+            <div class="dash-info-cell"><div class="dash-info-cell-label">Duration</div><div class="dash-info-cell-val" id="dh-duration">—</div></div>
+            <div class="dash-info-cell dash-measure-cell dash-actual-cell" id="dh-actual-cell">
+              <div class="dash-info-cell-label">Actual</div>
+              <div class="dash-info-cell-val" id="dh-actual">—</div>
+            </div>
+            <div class="dash-info-cell"><div class="dash-info-cell-label">Start Date</div><div class="dash-info-cell-val" id="dh-start">—</div></div>
+            <div class="dash-info-cell"><div class="dash-info-cell-label">Weeks Out</div><div class="dash-info-cell-val" id="dh-weeksout">—</div></div>
+            <div class="dash-info-cell dash-measure-cell dash-target-cell">
+              <div class="dash-info-cell-label">Target</div>
+              <div class="dash-info-cell-val" id="dh-target">—</div>
+            </div>
+          </div>
+        </div>
 
-// Default week definitions (used when no saved template exists)
-const DEFAULT_WEEKS = [
-  { num:1, title:"Project setup", phase:1, tasks:[
-    "Open PalmCrest MS Project template",
-    "Verify template version and ribbon tools",
-    "Create project calendar and shift patterns",
-    "Set up WBS top-level structure",
-    "Create phase/area header tasks",
-    "Confirm shutdown dates and duration with client"
-  ]},
-  { num:2, title:"WBS and FLOC structure", phase:1, tasks:[
-    "Build out full WBS hierarchy",
-    "Verify FLOC levels match SAP equipment hierarchy",
-    "Check WBS level discipline against standard (5-level max)",
-    "Create sub-header placeholders for each work centre",
-    "Align WBS with scope document / SWR list"
-  ]},
-  { num:3, title:"First SAP import", phase:1, tasks:[
-    "Export IW37N data from SAP for all work orders",
-    "Run ImprtSap macro to load work orders",
-    "Move work orders into correct WBS / FLOC positions",
-    "Check for duplicates and unmatched FLOCs",
-    "Flag work orders with missing data (duration, resource)"
-  ]},
-  { num:4, title:"Non-SAP data and logic", phase:1, tasks:[
-    "Add non-SAP tasks (isolations, scaffold, inspections)",
-    "Populate Text fields: Supervisor, Team, Sub-team",
-    "Assign work centres and crew codes",
-    "Create basic logic links (FS dependencies)",
-    "Link isolation and de-isolation milestones",
-    "Re-import SAP and verify changes since week 3"
-  ]},
-  { num:5, title:"Critical path foundation", phase:2, tasks:[
-    "Identify the primary shutdown sequence",
-    "Build critical path through main equipment trains",
-    "Add key milestones (safe to enter, box-up, first fire)",
-    "Link contractor packages into main sequence",
-    "Check schedule is fully logic-driven (no floaters)",
-    "Re-import SAP and reconcile new/changed work orders"
-  ]},
-  { num:6, title:"Scope and resource loading", phase:2, tasks:[
-    "Challenge scope — remove duplicates, out-of-scope WOs",
-    "Identify work for replan (defer to post-shutdown)",
-    "Assign resources to all tasks",
-    "First resource levelling pass",
-    "Check crew loading curves — flatten peaks",
-    "Contractor input: request durations and resource plans"
-  ]},
-  { num:7, title:"Contractor integration", phase:2, tasks:[
-    "Incorporate contractor schedules and durations",
-    "Link contractor scope into main logic network",
-    "Identify contractor-owned CP tasks",
-    "Re-import SAP — verify any scope additions",
-    "Check interface points between disciplines",
-    "Update Supervisor and team assignments for contractors"
-  ]},
-  { num:8, title:"Critical path refinement", phase:3, tasks:[
-    "Identify all CP and CT (critical-to) tasks",
-    "Colour-code / flag CP tasks in schedule",
-    "Identify float thresholds — near-critical tasks",
-    "Second resource levelling pass after CP is set",
-    "Check Executive Summary milestone dates",
-    "Re-import SAP — final scope freeze approaching"
-  ]},
-  { num:9, title:"Schedule optimisation", phase:3, tasks:[
-    "Compress CP where possible (parallel work, shift changes)",
-    "Validate all task durations with supervisors",
-    "Confirm isolations are linked and sequenced correctly",
-    "Check schedule against cost forecast (manhours vs budget)",
-    "Review replan list — confirm defer or include decisions",
-    "Contractor feedback loop — confirm logic and durations"
-  ]},
-  { num:10, title:"Stakeholder review", phase:3, tasks:[
-    "Produce draft schedule for internal review",
-    "Issue to discipline leads for duration / logic check",
-    "Facilitate scope challenge workshop",
-    "Capture mark-ups and update schedule",
-    "Re-import SAP — lock scope",
-    "Confirm Executive Summary is accurate and presentable"
-  ]},
-  { num:11, title:"Pre-issue QA", phase:4, tasks:[
-    "Run Schedule Health Check tool — resolve all flags",
-    "Verify no open ends / dangling tasks",
-    "Check all milestones have predecessors and successors",
-    "Confirm resource histogram is within crew limits",
-    "Final contractor confirmation of durations",
-    "Produce baseline version — save and lock"
-  ]},
-  { num:12, title:"Issue for construction", phase:4, tasks:[
-    "Produce final issue-for-construction schedule",
-    "Export Executive Summary report",
-    "Issue lookahead reports by discipline / crew",
-    "Upload to LiveTrack / client portal",
-    "Conduct pre-shutdown schedule walkthrough with team",
-    "Archive baseline — ready for progress tracking"
-  ]}
-];
+        <!-- Phase chevrons -->
+        <div class="dash-phases" id="dashPhases"></div>
 
-const PHASE_LABELS = { 1:"Foundation", 2:"Build", 3:"Optimise", 4:"Finalise" };
-const PHASE_COLORS = { 1:"#1e6b3c", 2:"#8a4500", 3:"#1a3a6e", 4:"#9b2020" };
+        <!-- KPI summary strip -->
+        <div class="dash-kpi-strip" id="dashKpiStrip"></div>
 
-// Deep-clone defaults so admin edits don't mutate originals
-let WEEKS = JSON.parse(JSON.stringify(DEFAULT_WEEKS));
+        <!-- Role readiness timeline -->
+        <div class="dash-section-title">Shutdown Readiness Timeline</div>
+        <div class="dash-timeline-card">
+          <div class="dash-timeline-scroll">
+            <table class="dash-timeline-table" id="dashTimelineTable"></table>
+          </div>
+        </div>
 
-let projects    = [];
-let activeProject = null;
-let taskState   = {};
-let adminMode   = false;
-let saveTimer   = null;
+        <!-- Action status + Readiness curve -->
+        <div class="dash-bottom-grid">
+          <div class="dash-action-card">
+            <div class="dash-section-title" style="padding:0 0 10px 0">Action List Status</div>
+            <div class="dash-pie-row">
+              <svg viewBox="0 0 120 120" width="120" height="120" id="dashPieSvg"></svg>
+              <div class="dash-pie-legend">
+                <div class="dash-legend-item"><span class="dash-legend-dot" style="background:var(--green)"></span>Completed <strong id="dh-actions-done">0</strong></div>
+                <div class="dash-legend-item"><span class="dash-legend-dot" style="background:var(--red)"></span>Open <strong id="dh-actions-open">0</strong></div>
+              </div>
+            </div>
+          </div>
+          <div class="dash-curve-card">
+            <div class="dash-section-title" style="padding:0 0 10px 0" id="dashCurveTitle">Readiness Curve</div>
+            <svg viewBox="0 0 480 220" id="dashCurveSvg" style="width:100%;height:auto"></svg>
+          </div>
+        </div>
 
-// ── API ────────────────────────────────────────────────────
-
-async function api(params) {
-  const url = GAS_URL + "?" + new URLSearchParams(params);
-  try {
-    const r = await fetch(url, { redirect:"follow" });
-    const text = await r.text();
-    return JSON.parse(text);
-  } catch(e) {
-    console.error("API error:", e);
-    return { error: e.message };
-  }
-}
-
-async function apiPost(body) {
-  const params = {};
-  Object.entries(body).forEach(([k,v]) => { params[k] = String(v); });
-  if (body.action === "createProject") {
-    params.name = encodeURIComponent(params.project);
-    delete params.project;
-  }
-  return api(params);
-}
-
-// ── Init ───────────────────────────────────────────────────
-
-async function init() {
-  // Load saved template from localStorage (admin edits apply globally)
-  const saved = localStorage.getItem("pc_template");
-  if (saved) {
-    try { WEEKS = JSON.parse(saved); } catch(e) {}
-  }
-  const data = await api({ action:"listProjects" });
-  projects = data.projects || [];
-  renderSidebar();
-}
-
-// ── Admin ──────────────────────────────────────────────────
-
-function promptAdmin() {
-  document.getElementById("admin-pw-input").value = "";
-  document.getElementById("admin-err").classList.remove("show");
-  document.getElementById("admin-modal").classList.add("open");
-  setTimeout(()=>document.getElementById("admin-pw-input").focus(), 80);
-}
-
-function closeAdminModal() {
-  document.getElementById("admin-modal").classList.remove("open");
-}
-
-function checkAdminPw() {
-  const val = document.getElementById("admin-pw-input").value;
-  if (val === ADMIN_PW) {
-    closeAdminModal();
-    enterAdmin();
-  } else {
-    document.getElementById("admin-err").classList.add("show");
-    document.getElementById("admin-pw-input").value = "";
-    document.getElementById("admin-pw-input").focus();
-  }
-}
-
-function enterAdmin() {
-  adminMode = true;
-  document.getElementById("admin-banner").classList.add("on");
-  document.getElementById("btn-admin-on").style.display  = "none";
-  document.getElementById("btn-admin-off").style.display = "";
-  if (activeProject) renderMain(false);
-}
-
-function exitAdmin() {
-  adminMode = false;
-  document.getElementById("admin-banner").classList.remove("on");
-  document.getElementById("btn-admin-on").style.display  = "";
-  document.getElementById("btn-admin-off").style.display = "none";
-  if (activeProject) renderMain(false);
-}
-
-// ── Save template ──────────────────────────────────────────
-// Admin edits to WEEKS are saved to localStorage and also
-// persisted via GAS so other devices get them on next load.
-
-function persistTemplate() {
-  localStorage.setItem("pc_template", JSON.stringify(WEEKS));
-  // Also save to GAS as a special "_template" project-like record
-  api({ action:"saveTemplate", data: encodeURIComponent(JSON.stringify(WEEKS)) });
-}
-
-function flashSave(wk) {
-  const el = document.getElementById(`save-ind-${wk}`);
-  if (!el) return;
-  el.classList.add("show");
-  setTimeout(()=>el.classList.remove("show"), 1800);
-}
-
-// ── Admin edit handlers ────────────────────────────────────
-
-function onTitleChange(wk, val) {
-  const w = WEEKS.find(x=>x.num===wk);
-  if (w) w.title = val;
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(()=>{ persistTemplate(); flashSave(wk); }, 800);
-}
-
-function onTaskChange(wk, idx, val) {
-  const w = WEEKS.find(x=>x.num===wk);
-  if (w) w.tasks[idx] = val;
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(()=>{ persistTemplate(); flashSave(wk); }, 800);
-}
-
-function deleteTask(wk, idx) {
-  const w = WEEKS.find(x=>x.num===wk);
-  if (!w || w.tasks.length <= 1) return;
-  w.tasks.splice(idx, 1);
-  persistTemplate();
-  // Re-render just this card
-  const card = document.getElementById(`wcard-${wk}`);
-  if (card) card.outerHTML = renderWeekCard(w);
-}
-
-function addTask(wk) {
-  const inp = document.getElementById(`add-inp-${wk}`);
-  if (!inp) return;
-  const val = inp.value.trim();
-  if (!val) return;
-  const w = WEEKS.find(x=>x.num===wk);
-  if (w) {
-    w.tasks.push(val);
-    persistTemplate();
-    inp.value = "";
-    const card = document.getElementById(`wcard-${wk}`);
-    if (card) card.outerHTML = renderWeekCard(w);
-  }
-}
-
-// ── Sidebar ────────────────────────────────────────────────
-
-function renderSidebar() {
-  const el = document.getElementById("project-list");
-  if (!projects.length) {
-    el.innerHTML = `<div class="empty"><p>No shutdowns yet.<br>Create one below.</p></div>`;
-    return;
-  }
-  el.innerHTML = projects.map(p => {
-    const pct   = activeProject?.id === p.id ? calcPct() : "–";
-    const active = activeProject?.id === p.id ? "active" : "";
-    return `<div class="project-item ${active}" onclick="selectProject('${p.id}')">
-      <span class="proj-name">${esc(p.name)}</span>
-      <span class="proj-pct">${pct}%</span>
-    </div>`;
-  }).join("");
-}
-
-function calcPct() {
-  const total = WEEKS.reduce((a,w)=>a+w.tasks.length,0);
-  const done  = Object.values(taskState).filter(v=>v.checked).length;
-  return Math.round(done/total*100);
-}
-
-// ── Select project ─────────────────────────────────────────
-
-async function selectProject(id) {
-  const p = projects.find(x=>x.id===id);
-  if (!p) return;
-  closeSidebar();
-  activeProject = p;
-  taskState = {};
-  renderMain(true);
-  const data = await api({ action:"getState", project:id });
-  if (data.state) taskState = data.state;
-  renderMain(false);
-  renderSidebar();
-  document.getElementById("btn-report").style.display = "";
-  document.getElementById("btn-clear").style.display  = "";
-}
-
-// ── Main render ────────────────────────────────────────────
-
-function renderMain(loading) {
-  const el = document.getElementById("main");
-  if (!activeProject) return;
-  if (loading) {
-    el.innerHTML = `<div class="empty" style="margin-top:4rem"><div class="spinner"></div><p>Loading…</p></div>`;
-    return;
-  }
-  const total = WEEKS.reduce((a,w)=>a+w.tasks.length,0);
-  const done  = Object.values(taskState).filter(v=>v.checked).length;
-  const pct   = Math.round(done/total*100);
-
-  el.innerHTML = `
-    <div class="page-hd">
-      <div class="page-hd-left">
-        <h2>${esc(activeProject.name)}</h2>
-        <p>12-week shutdown planning checklist${adminMode?' &nbsp;<span style="color:var(--admin);font-weight:600">— Admin mode</span>':''}</p>
       </div>
     </div>
-    <div class="summary-bar">
-      <div class="summary-stat"><div class="val">${done}</div><div class="lbl">Complete</div></div>
-      <div class="summary-divider"></div>
-      <div class="summary-stat"><div class="val">${total-done}</div><div class="lbl">Remaining</div></div>
-      <div class="summary-divider"></div>
-      <div class="summary-stat"><div class="val">${pct}%</div><div class="lbl">Progress</div></div>
-      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+
+    <!-- CHECKLIST — gantt-style weekly grid, click cell to tick -->
+    <div class="view" id="view-checklist">
+      <div class="checklist-toolbar">
+        <div class="role-filter-wrap" id="roleFilterWrap" style="flex:1;border-bottom:none"></div>
+        <button class="range-edit-toggle" id="rangeEditBtn" onclick="toggleRangeEditMode()">
+          <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          <span class="range-edit-label">Adjust weeks</span>
+        </button>
+      </div>
+      <div class="range-edit-hint hidden" id="rangeEditHint">
+        Click a task's start week, then its end week, to set the weeks tracked for that task. Click "Adjust weeks" again to finish.
+      </div>
+      <div class="gantt-scroll-wrap">
+        <table class="gantt-table" id="ganttTable"></table>
+      </div>
     </div>
-    <div class="phase-legend">
-      ${[1,2,3,4].map(ph=>`
-        <div class="ph-badge">
-          <div class="ph-dot" style="background:${PHASE_COLORS[ph]}"></div>
-          W${ph===1?'1–4':ph===2?'5–7':ph===3?'8–10':'11–12'} ${PHASE_LABELS[ph]}
-        </div>`).join("")}
+
+    <!-- KPIs (moved off dashboard) -->
+    <div class="view" id="view-kpis">
+      <div class="section-label">KPI milestones</div>
+      <div class="kpi-list" id="kpiList"><div class="spinner-wrap"><div class="spinner"></div></div></div>
     </div>
-    <div class="weeks-grid">
-      ${WEEKS.map(w => renderWeekCard(w)).join("")}
-    </div>`;
+
+    <!-- ACTIONS -->
+    <div class="view" id="view-actions">
+      <div class="actions-header">
+        <select id="actionFilter" onchange="renderActions()">
+          <option value="">All priorities</option>
+          <option value="High">High</option>
+          <option value="Medium">Medium</option>
+        </select>
+        <button class="add-action-btn" onclick="openModal()">
+          <svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add action
+        </button>
+      </div>
+      <div id="actionListContainer"></div>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="view" id="view-progress">
+      <div class="prog-summary" id="progressContainer"></div>
+    </div>
+
+    <!-- REPORT (admin only) -->
+    <div class="view" id="view-report">
+      <div class="report-page">
+        <div class="report-generate-card">
+          <div class="report-gen-title">Generate Readiness Report</div>
+          <div class="report-gen-sub">Automated summary of current shutdown readiness — covers progress, KPI milestones, open actions, and recommended focus areas.</div>
+          <div class="report-audience-row">
+            <button class="audience-btn active" id="aud-internal" onclick="setAudience('internal')">Internal team</button>
+            <button class="audience-btn" id="aud-management" onclick="setAudience('management')">Management</button>
+          </div>
+          <button class="generate-btn" id="generateBtn" onclick="generateReport()">
+            <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Generate report
+          </button>
+        </div>
+        <div class="report-output" id="reportOutput">
+          <div class="report-output-header">
+            <span class="report-output-title" id="reportOutputTitle">Readiness Report</span>
+            <button class="report-export-btn" onclick="exportReportDocx()">
+              <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export Word
+            </button>
+          </div>
+          <div id="reportBody" class="report-body"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETUP (admin only) -->
+    <div class="view" id="view-setup">
+      <div class="setup-page">
+
+        <!-- Shutdown details -->
+        <div class="setup-section">
+          <div class="setup-section-head">Shutdown details</div>
+          <div class="setup-field">
+            <label>Name</label>
+            <input type="text" id="setup-shutName" placeholder="e.g. May Major">
+          </div>
+          <div class="setup-field">
+            <label>Start date</label>
+            <input type="date" id="setup-startDate">
+          </div>
+          <div class="setup-field">
+            <label>Duration</label>
+            <input type="text" id="setup-duration" placeholder="e.g. 96Hrs">
+          </div>
+          <div class="setup-field">
+            <label>Revision</label>
+            <input type="text" id="setup-revision" placeholder="e.g. MTHS2504">
+          </div>
+          <button class="setup-save-btn" id="saveConfigBtn" onclick="saveConfig()">Save shutdown details</button>
+        </div>
+
+        <!-- Roles -->
+        <div class="setup-section">
+          <div class="setup-section-head">
+            Roles
+            <span style="font-size:10px;color:var(--text-muted);text-transform:none;font-weight:400">name · PIN · active</span>
+          </div>
+          <div id="rolesContainer"></div>
+          <button class="add-role-btn" onclick="addRoleRow()">
+            <svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add role
+          </button>
+          <button class="setup-save-btn" id="saveRolesBtn" onclick="saveRoles()">Save roles</button>
+          <div class="setup-note">PIN must be 4 digits. Turning a role off hides it from the checklist but keeps its task history. Changes take effect on next login.</div>
+        </div>
+
+        <!-- Task editor -->
+        <div class="setup-section">
+          <div class="setup-section-head">
+            Tasks
+            <span style="font-size:10px;color:var(--text-muted);text-transform:none;font-weight:400">edit descriptions, week due, duration, KPI link</span>
+          </div>
+          <div class="task-editor-filter" id="teRoleFilter"></div>
+          <div class="task-editor-list" id="teTaskList"></div>
+          <button class="te-add-btn" onclick="teAddTask()">
+            <svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add task
+          </button>
+          <button class="te-save-btn" id="teTaskSaveBtn" onclick="teSaveTasks()">Save tasks</button>
+          <div class="setup-note">Changing a task ID will lose its completion history. Safe to edit descriptions, week due, duration and KPI link freely.</div>
+        </div>
+
+        <!-- Reset progress -->
+        <div class="setup-section reset-section">
+          <div class="setup-section-head reset-head">
+            Start a New Shutdown
+            <span style="font-size:10px;color:rgba(255,255,255,.6);text-transform:none;font-weight:400">clears all progress for the next planning cycle</span>
+          </div>
+          <div class="reset-body">
+            <p class="reset-warning-text">
+              This permanently clears every tick on the Checklist (all gantt cells reset to blank) and resets KPI actual % to 0. Task descriptions, roles, week-due/duration settings, user PINs, and the Action Register are all kept as-is — delete individual actions separately if needed. This cannot be undone.
+            </p>
+            <button class="reset-btn" onclick="confirmResetProgress()">
+              <svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              Clear All Checklist Progress
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Add Action Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-sheet">
+      <div class="modal-title">New action</div>
+      <div>
+        <label>Description</label>
+        <textarea id="newActionDesc" placeholder="Describe the action required…"></textarea>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div>
+          <label>Priority</label>
+          <select id="newActionPriority"><option>Medium</option><option>High</option><option>Low</option></select>
+        </div>
+        <div>
+          <label>Week due</label>
+          <select id="newActionWeek">
+            <option value="12">W-12</option><option value="11">W-11</option>
+            <option value="10">W-10</option><option value="9">W-9</option>
+            <option value="8">W-8</option><option value="7">W-7</option>
+            <option value="6">W-6</option><option value="5">W-5</option>
+            <option value="4">W-4</option><option value="3">W-3</option>
+            <option value="2" selected>W-2</option><option value="1">W-1</option>
+            <option value="0">Shutdown</option><option value="-1">W+1</option>
+            <option value="-2">W+2</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label>Area / equipment</label>
+        <input type="text" id="newActionArea" placeholder="e.g. RC901, CV902">
+      </div>
+      <div>
+        <label>Assigned to</label>
+        <input type="text" id="newActionAssigned" placeholder="Name">
+      </div>
+      <div class="modal-btns">
+        <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+        <button class="modal-save" onclick="saveAction()">Save action</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="reset-confirm-overlay" id="resetConfirmOverlay">
+  <div class="reset-confirm-card">
+    <div class="reset-confirm-icon">
+      <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+    </div>
+    <div class="reset-confirm-title">Clear all checklist progress?</div>
+    <div class="reset-confirm-text">
+      This will permanently remove every tick on the Checklist and reset KPI completion to 0%. Actions are not affected — delete those individually if needed.
+      Task list, week-due/duration, and PINs are kept. This cannot be undone.
+      <br><br>Type <strong>RESET</strong> below to confirm.
+    </div>
+    <input type="text" class="reset-confirm-input" id="resetConfirmInput" placeholder="Type RESET" oninput="checkResetConfirmInput()">
+    <div class="reset-confirm-btns">
+      <button class="reset-confirm-cancel" onclick="closeResetConfirm()">Cancel</button>
+      <button class="reset-confirm-go" id="resetConfirmGoBtn" onclick="executeResetProgress()" disabled>Clear Everything</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Config ───────────────────────────────────────────────────
+const GAS_URL = 'YOUR_GAS_DEPLOYMENT_URL_HERE';
+const DEMO_MODE = GAS_URL.includes('YOUR_GAS'); // auto-detects placeholder
+
+// ── Demo data (used when GAS not yet deployed) ───────────────
+const DEMO_USERS = {
+  '1001': { ok:true, userId:'U001', name:'Shut Coordinator', role:'Shut Coordinator' },
+  '1002': { ok:true, userId:'U002', name:'Shut Planner',     role:'Shut Planner' },
+  '1003': { ok:true, userId:'U003', name:'Shut Scheduler',   role:'Shut Scheduler' },
+  '1004': { ok:true, userId:'U004', name:'Permit Hut',       role:'Permit Hut' },
+  '1005': { ok:true, userId:'U005', name:'Maint Sup',        role:'Maint Sup' },
+  '1006': { ok:true, userId:'U006', name:'HSES',             role:'HSES' },
+  '1007': { ok:true, userId:'U007', name:'Mat. Logistics',   role:'Material Logistics' },
+  '1008': { ok:true, userId:'U008', name:'Planning Supt',    role:'Planning Superintendent' },
+  '9999': { ok:true, userId:'U999', name:'Admin',            role:'Admin' },
+};
+
+const DEMO_CONFIG = {
+  shutdownName:'May Major', startDate:'2024-06-24',
+  duration:'96Hrs', revision:'MTHS2504', appTitle:'Palm Crest SRD'
+};
+
+const DEMO_TASKS = [
+  {taskId:'SC001',role:'Shut Coordinator',description:'Attend weekly scope challenge meeting',weekDue:-12,duration:12,kpiLink:''},
+  {taskId:'SC002',role:'Shut Coordinator',description:'Run weekly shutdown readiness review meeting',weekDue:-12,duration:12,kpiLink:''},
+  {taskId:'SC003',role:'Shut Coordinator',description:'Send out scope freeze site notice',weekDue:-7,duration:1,kpiLink:'Scope Freeze'},
+  {taskId:'SC004',role:'Shut Coordinator',description:'Review jobs and assess contractor labour requirements',weekDue:-7,duration:7,kpiLink:''},
+  {taskId:'SC005',role:'Shut Coordinator',description:'Ensure planner has sent out mobilisation requirements (RRF)',weekDue:-10,duration:1,kpiLink:''},
+  {taskId:'SC006',role:'Shut Coordinator',description:'Follow up with scheduler re preferred contractor sort field',weekDue:-7,duration:5,kpiLink:''},
+  {taskId:'SC007',role:'Shut Coordinator',description:'Assist scheduler to identify and order hire equipment',weekDue:-2,duration:1,kpiLink:'Hire Equip'},
+  {taskId:'SC008',role:'Shut Coordinator',description:'Walkthrough with scheduler',weekDue:-3,duration:4,kpiLink:'S/down Walkthrough'},
+  {taskId:'SC009',role:'Shut Coordinator',description:'Develop and send out shutdown definition',weekDue:-8,duration:1,kpiLink:''},
+  {taskId:'SC010',role:'Shut Coordinator',description:'Develop shutdown management plan',weekDue:-6,duration:2,kpiLink:''},
+  {taskId:'SC011',role:'Shut Coordinator',description:'Develop org chart',weekDue:-8,duration:3,kpiLink:''},
+  {taskId:'SC012',role:'Shut Coordinator',description:'Identify area leads and communicate to them',weekDue:-8,duration:2,kpiLink:''},
+  {taskId:'SC013',role:'Shut Coordinator',description:'Conduct internal schedule review',weekDue:-5,duration:3,kpiLink:''},
+  {taskId:'SC014',role:'Shut Coordinator',description:'Liaise with MLO to confirm all parts and materials on track',weekDue:-5,duration:4,kpiLink:'Parts Ordered'},
+  {taskId:'SC015',role:'Shut Coordinator',description:'Develop operational readiness plan (ORA)',weekDue:-4,duration:2,kpiLink:''},
+  {taskId:'SC016',role:'Shut Coordinator',description:'Identify high-risk tasks requiring rescue plan (CSE, W@H)',weekDue:-6,duration:3,kpiLink:''},
+  {taskId:'SC017',role:'Shut Coordinator',description:'Develop site layout plan with scheduler (incl. crane positions)',weekDue:-6,duration:2,kpiLink:''},
+  {taskId:'SC018',role:'Shut Coordinator',description:'Participate in isolation review with permit hut',weekDue:-2,duration:2,kpiLink:'Isolations'},
+  {taskId:'SC019',role:'Shut Coordinator',description:'Ensure planners have sent out mobilisation requirements (RFQ)',weekDue:-1,duration:1,kpiLink:'Mob Finalised'},
+  {taskId:'SC020',role:'Shut Coordinator',description:'Develop permit requests',weekDue:-2,duration:2,kpiLink:''},
+  {taskId:'SC021',role:'Shut Coordinator',description:'Email camp with shutdown dates for crib room cleaning',weekDue:-4,duration:1,kpiLink:''},
+  {taskId:'SC022',role:'Shut Coordinator',description:'Send out mobilisation sheet to shutdown admin',weekDue:-2,duration:2,kpiLink:''},
+  {taskId:'SC023',role:'Shut Coordinator',description:'Develop shutdown expectations presentation',weekDue:-3,duration:2,kpiLink:''},
+  {taskId:'SC024',role:'Shut Coordinator',description:'Ensure enough confined space sentries for planned works',weekDue:-2,duration:1,kpiLink:''},
+  {taskId:'SC025',role:'Shut Coordinator',description:'Identify commissioning requirements from job list with scheduler',weekDue:-3,duration:2,kpiLink:''},
+  {taskId:'SC026',role:'Shut Coordinator',description:'Develop washdown list with scheduler',weekDue:-3,duration:3,kpiLink:''},
+  {taskId:'SC027',role:'Shut Coordinator',description:'Identify pre-works required — earthworks and cleaning',weekDue:-4,duration:3,kpiLink:''},
+  {taskId:'SC028',role:'Shut Coordinator',description:'Finalise positioning list and communicate to Ops',weekDue:-2,duration:2,kpiLink:''},
+  {taskId:'SC029',role:'Shut Coordinator',description:'Schedule post-shut critique meeting',weekDue:-1,duration:1,kpiLink:''},
+  {taskId:'SC030',role:'Shut Coordinator',description:'Conduct contractor leadership meeting',weekDue:-1,duration:1,kpiLink:''},
+  {taskId:'SP001',role:'Shut Planner',description:'Prepare job plans and work packages',weekDue:-9,duration:9,kpiLink:''},
+  {taskId:'SP002',role:'Shut Planner',description:'Ensure parts ordered and verified in system',weekDue:-5,duration:1,kpiLink:'Parts Ordered'},
+  {taskId:'SP003',role:'Shut Planner',description:'Parts verified and confirmed available',weekDue:-3,duration:1,kpiLink:'Parts Verified'},
+  {taskId:'SP004',role:'Shut Planner',description:'Raise major purchase orders',weekDue:-1,duration:1,kpiLink:'Major POs'},
+  {taskId:'SP005',role:'Shut Planner',description:'Issue RFQs to contractors',weekDue:-2,duration:1,kpiLink:'RFQs'},
+  {taskId:'SP006',role:'Shut Planner',description:'Finalise mobilisation documentation',weekDue:-1,duration:1,kpiLink:'Mob Finalised'},
+  {taskId:'SP007',role:'Shut Planner',description:'Prepare execution packages for each job',weekDue:-1,duration:1,kpiLink:''},
+  {taskId:'SP008',role:'Shut Planner',description:'Review and close out completed work orders',weekDue:1,duration:1,kpiLink:''},
+  {taskId:'SS001',role:'Shut Scheduler',description:'Develop baseline Gantt schedule',weekDue:-9,duration:4,kpiLink:''},
+  {taskId:'SS002',role:'Shut Scheduler',description:'Confirm and freeze schedule',weekDue:-5,duration:1,kpiLink:'Schedule Freeze'},
+  {taskId:'SS003',role:'Shut Scheduler',description:'Confirm critical path',weekDue:-4,duration:1,kpiLink:'Critical Path Confirmed'},
+  {taskId:'SS004',role:'Shut Scheduler',description:'Conduct stakeholder Gantt walkthrough',weekDue:-3,duration:4,kpiLink:'S/down Walkthrough'},
+  {taskId:'SS005',role:'Shut Scheduler',description:'Schedule sign-off by all stakeholders',weekDue:-2,duration:1,kpiLink:'Schedule Sign Off'},
+  {taskId:'SS006',role:'Shut Scheduler',description:'Identify and book hire equipment',weekDue:-2,duration:1,kpiLink:'Hire Equip'},
+  {taskId:'SS007',role:'Shut Scheduler',description:'Confirm isolations with permit hut',weekDue:-2,duration:1,kpiLink:'Isolations'},
+  {taskId:'SS008',role:'Shut Scheduler',description:'Issue execution package',weekDue:-1,duration:1,kpiLink:''},
+  {taskId:'SS009',role:'Shut Scheduler',description:'Develop site layout plan (including crane positions)',weekDue:-6,duration:2,kpiLink:''},
+  {taskId:'PH001',role:'Permit Hut',description:'Develop permit register for shutdown works',weekDue:-3,duration:3,kpiLink:''},
+  {taskId:'PH002',role:'Permit Hut',description:'Isolation review with coordinator',weekDue:-2,duration:2,kpiLink:'Isolations'},
+  {taskId:'PH003',role:'Permit Hut',description:'Isolation schedule finalised',weekDue:-2,duration:1,kpiLink:'Isolations'},
+  {taskId:'PH004',role:'Permit Hut',description:'Permit hut staffed and ready for shutdown start',weekDue:-1,duration:1,kpiLink:''},
+  {taskId:'MS001',role:'Maint Sup',description:'Review and approve job list for shutdown',weekDue:-8,duration:2,kpiLink:''},
+  {taskId:'MS002',role:'Maint Sup',description:'Confirm resource requirements per area',weekDue:-6,duration:2,kpiLink:''},
+  {taskId:'MS003',role:'Maint Sup',description:'Attend Gantt walkthrough',weekDue:-3,duration:1,kpiLink:'S/down Walkthrough'},
+  {taskId:'MS004',role:'Maint Sup',description:'Brief area teams on shutdown plan',weekDue:-1,duration:2,kpiLink:''},
+  {taskId:'HS001',role:'HSES',description:'Review high-risk task list and confirm rescue plans',weekDue:-3,duration:2,kpiLink:''},
+  {taskId:'HS002',role:'HSES',description:'Confirm inductions roster finalised',weekDue:-2,duration:1,kpiLink:''},
+  {taskId:'HS003',role:'HSES',description:'Attend pre-shutdown contractor leadership meeting',weekDue:-1,duration:1,kpiLink:'CRAW'},
+  {taskId:'ML001',role:'Material Logistics',description:'Confirm all parts on order',weekDue:-5,duration:1,kpiLink:'Parts Ordered'},
+  {taskId:'ML002',role:'Material Logistics',description:'Verify parts received and staged',weekDue:-3,duration:1,kpiLink:'Parts Verified'},
+  {taskId:'ML003',role:'Material Logistics',description:'Confirm consumables stocktake complete',weekDue:-2,duration:1,kpiLink:''},
+  {taskId:'ML004',role:'Material Logistics',description:'Stage materials at work-front',weekDue:-1,duration:2,kpiLink:''},
+  {taskId:'ML005',role:'Material Logistics',description:'Return unused stock to store post-shutdown',weekDue:1,duration:1,kpiLink:''},
+  {taskId:'PS001',role:'Planning Superintendent',description:'Chair weekly shutdown readiness meeting',weekDue:-12,duration:12,kpiLink:''},
+  {taskId:'PS002',role:'Planning Superintendent',description:'Approve scope freeze',weekDue:-7,duration:1,kpiLink:'Scope Freeze'},
+  {taskId:'PS003',role:'Planning Superintendent',description:'Review and approve shutdown management plan',weekDue:-5,duration:1,kpiLink:''},
+  {taskId:'PS004',role:'Planning Superintendent',description:'Approve Gantt schedule',weekDue:-4,duration:1,kpiLink:''},
+  {taskId:'PS005',role:'Planning Superintendent',description:'Attend stakeholder walkthrough',weekDue:-3,duration:1,kpiLink:'S/down Walkthrough'},
+  {taskId:'PS006',role:'Planning Superintendent',description:'Sign off final schedule',weekDue:-2,duration:1,kpiLink:'Schedule Sign Off'},
+  {taskId:'PS007',role:'Planning Superintendent',description:'Confirm execution readiness',weekDue:-1,duration:1,kpiLink:''},
+  {taskId:'PS008',role:'Planning Superintendent',description:'Conduct post-shutdown review',weekDue:1,duration:1,kpiLink:''},
+];
+
+// Demo KPIs: daysLeft dynamically calculated (assume W-11, 77 days to shutdown)
+const DEMO_KPIS = (() => {
+  const SD = 77; // days to shutdown in demo
+  const dl = wk => SD + (wk * 7);
+  return [
+    {kpiId:'KPI01',category:'Planning',   name:'Scope Freeze',           weekDue:-7, actualPct:0, daysLeft:dl(-7), linkedTasks:[
+      {taskId:'SC003',description:'Send out scope freeze site notice',role:'Shut Coordinator',weekDue:-7,status:'none'},
+      {taskId:'PS002',description:'Approve scope freeze',role:'Planning Superintendent',weekDue:-7,status:'none'}]},
+    {kpiId:'KPI02',category:'Planning',   name:'Parts Ordered',          weekDue:-5, actualPct:0, daysLeft:dl(-5), linkedTasks:[
+      {taskId:'SP002',description:'Ensure parts ordered and verified in system',role:'Shut Planner',weekDue:-5,status:'none'},
+      {taskId:'ML001',description:'Confirm all parts on order',role:'Material Logistics',weekDue:-5,status:'none'}]},
+    {kpiId:'KPI03',category:'Planning',   name:'Parts Verified',         weekDue:-3, actualPct:0, daysLeft:dl(-3), linkedTasks:[
+      {taskId:'SP003',description:'Parts verified and confirmed available',role:'Shut Planner',weekDue:-3,status:'none'},
+      {taskId:'ML002',description:'Verify parts received and staged',role:'Material Logistics',weekDue:-3,status:'none'}]},
+    {kpiId:'KPI04',category:'Planning',   name:'Major POs',              weekDue:-1, actualPct:0, daysLeft:dl(-1), linkedTasks:[
+      {taskId:'SP004',description:'Raise major purchase orders',role:'Shut Planner',weekDue:-1,status:'none'}]},
+    {kpiId:'KPI05',category:'Planning',   name:'RFQs',                   weekDue:-2, actualPct:0, daysLeft:dl(-2), linkedTasks:[
+      {taskId:'SP005',description:'Issue RFQs to contractors',role:'Shut Planner',weekDue:-2,status:'none'}]},
+    {kpiId:'KPI06',category:'Planning',   name:'Mob Finalised',          weekDue:-1, actualPct:0, daysLeft:dl(-1), linkedTasks:[
+      {taskId:'SP006',description:'Finalise mobilisation documentation',role:'Shut Planner',weekDue:-1,status:'none'}]},
+    {kpiId:'KPI07',category:'Scheduling', name:'Schedule Freeze',        weekDue:-5, actualPct:0, daysLeft:dl(-5), linkedTasks:[
+      {taskId:'SS002',description:'Confirm and freeze schedule',role:'Shut Scheduler',weekDue:-5,status:'none'}]},
+    {kpiId:'KPI08',category:'Scheduling', name:'Critical Path Confirmed',weekDue:-4, actualPct:0, daysLeft:dl(-4), linkedTasks:[
+      {taskId:'SS003',description:'Confirm critical path',role:'Shut Scheduler',weekDue:-4,status:'none'}]},
+    {kpiId:'KPI09',category:'Scheduling', name:'S/down Walkthrough',     weekDue:-3, actualPct:0, daysLeft:dl(-3), linkedTasks:[
+      {taskId:'SS004',description:'Conduct stakeholder Gantt walkthrough',role:'Shut Scheduler',weekDue:-3,status:'none'},
+      {taskId:'SC008',description:'Walkthrough with scheduler',role:'Shut Coordinator',weekDue:-3,status:'none'},
+      {taskId:'MS003',description:'Attend Gantt walkthrough',role:'Maint Sup',weekDue:-3,status:'none'},
+      {taskId:'PS005',description:'Attend stakeholder walkthrough',role:'Planning Superintendent',weekDue:-3,status:'none'}]},
+    {kpiId:'KPI10',category:'Scheduling', name:'Schedule Sign Off',      weekDue:-2, actualPct:0, daysLeft:dl(-2), linkedTasks:[
+      {taskId:'SS005',description:'Schedule sign-off by all stakeholders',role:'Shut Scheduler',weekDue:-2,status:'none'},
+      {taskId:'PS006',description:'Sign off final schedule',role:'Planning Superintendent',weekDue:-2,status:'none'}]},
+    {kpiId:'KPI11',category:'Scheduling', name:'Hire Equip',             weekDue:-2, actualPct:0, daysLeft:dl(-2), linkedTasks:[
+      {taskId:'SS006',description:'Identify and book hire equipment',role:'Shut Scheduler',weekDue:-2,status:'none'},
+      {taskId:'SC007',description:'Assist scheduler to identify and order hire equipment',role:'Shut Coordinator',weekDue:-2,status:'none'}]},
+    {kpiId:'KPI12',category:'Scheduling', name:'Isolations',             weekDue:-2, actualPct:0, daysLeft:dl(-2), linkedTasks:[
+      {taskId:'SS007',description:'Confirm isolations with permit hut',role:'Shut Scheduler',weekDue:-2,status:'none'},
+      {taskId:'PH002',description:'Isolation review with coordinator',role:'Permit Hut',weekDue:-2,status:'none'},
+      {taskId:'PH003',description:'Isolation schedule finalised',role:'Permit Hut',weekDue:-2,status:'none'}]},
+    {kpiId:'KPI13',category:'Execution',  name:'CRAW',                   weekDue:-2, actualPct:0, daysLeft:dl(-2), linkedTasks:[
+      {taskId:'HS003',description:'Attend pre-shutdown contractor leadership meeting',role:'HSES',weekDue:-1,status:'none'}]},
+    {kpiId:'KPI14',category:'Execution',  name:'SEP',                    weekDue:-2, actualPct:0, daysLeft:dl(-2), linkedTasks:[]},
+    {kpiId:'KPI15',category:'Execution',  name:'Con L/ship Meeting',     weekDue:-2, actualPct:0, daysLeft:dl(-2), linkedTasks:[
+      {taskId:'SC030',description:'Conduct contractor leadership meeting',role:'Shut Coordinator',weekDue:-1,status:'none'}]},
+    {kpiId:'KPI16',category:'Execution',  name:'OSE',                    weekDue:-1, actualPct:0, daysLeft:dl(-1), linkedTasks:[]},
+    {kpiId:'KPI17',category:'Execution',  name:'Post Shut Report',       weekDue:1,  actualPct:0, daysLeft:dl(1),  linkedTasks:[
+      {taskId:'SP008',description:'Review and close out completed work orders',role:'Shut Planner',weekDue:1,status:'none'},
+      {taskId:'SP009',description:'Post-shutdown report ready',role:'Shut Planner',weekDue:1,status:'none'}]},
+  ];
+})().map(k => {
+  // Demo weeksOut assumed to be 11 (matches SD=77 days / 7)
+  const demoWeeksOut = 11;
+  const windowStart = -12, dueWeek = Number(k.weekDue);
+  const progress = (windowStart - (-demoWeeksOut)) / (windowStart - dueWeek);
+  k.targetPct = Math.max(0, Math.min(100, Math.round(progress * 100)));
+  return k;
+});
+
+const DEMO_ACTIONS = [
+  {actionId:'ACT001',status:'Open',priority:'High',area:'TLO Chute',weekDue:-6,description:'Organise workshop for TLO chute component changeout and produce detailed scope',assignedTo:'Martin & Jon A',daysLeft:-70},
+  {actionId:'ACT002',status:'Open',priority:'High',area:'Square-Round',weekDue:-6,description:'Replace square to round — parts and scope to be developed',assignedTo:'Jan Allford',daysLeft:-70},
+  {actionId:'ACT003',status:'Open',priority:'Medium',area:'RC901',weekDue:-10,description:'RC901 change buckets 10 and opposite — ensure W/O reflects and bucket repair in progress',assignedTo:'Paul M, Ash W',daysLeft:-98},
+  {actionId:'ACT004',status:'Open',priority:'Medium',area:'RC901',weekDue:-8,description:'Bucket wheel bearing — raise Noti, need con mon data to determine changeout requirement',assignedTo:'Tony W',daysLeft:-88},
+  {actionId:'ACT005',status:'Open',priority:'Medium',area:'CV902',weekDue:-8,description:'CV902 coolers on all gearboxes — noti and scopes required for Aug shut',assignedTo:'JWH',daysLeft:-88},
+  {actionId:'ACT006',status:'Open',priority:'Medium',area:'CH901',weekDue:-8,description:'CH901 relocate blocked chute sensor — requires scope',assignedTo:'Jon Allford',daysLeft:-88},
+];
+
+// ── State ────────────────────────────────────────────────────
+let currentUser = null;
+let config = {};
+let tasks = [];
+let statuses = {};
+
+// ── Global planned/actual cell model ────────────────────────────
+// Every tracked gantt cell across all tasks: {taskId, week}
+function allTrackedCells(taskList) {
+  const cells = [];
+  taskList.forEach(t => {
+    const weekDue = Number(t.weekDue);
+    const duration = Number(t.duration) || 1;
+    const startWeek = weekDue + duration - 1;
+    for (let w = startWeek; w >= weekDue; w--) cells.push({ taskId: t.taskId, week: w });
+  });
+  return cells;
+}
+// Cells that are "due" — at or before the current week — out of the FULL tracked set
+function dueCellsFor(taskList) {
+  return allTrackedCells(taskList).filter(c => c.week >= weeksOut);
+}
+// Target % = how many of the total tracked cells are due by now, out of the full total
+function targetPctForCells(taskList) {
+  const all = allTrackedCells(taskList);
+  if (!all.length) return 0;
+  const due = dueCellsFor(taskList);
+  return Math.round(due.length / all.length * 100);
+}
+// Actual % = how many of the total tracked cells are ticked done, out of the same full total
+function readinessPctFor(taskList) {
+  const all = allTrackedCells(taskList);
+  if (!all.length) return 0;
+  const done = all.filter(c => statuses[cellKey(c.taskId, c.week)]?.status === 'done').length;
+  return Math.round(done / all.length * 100);
 }
 
-function renderWeekCard(w) {
-  const done  = w.tasks.filter((_,i) => taskState[`${w.num}-${i}`]?.checked).length;
-  const isDone = done === w.tasks.length && w.tasks.length > 0;
-  const adminClass = adminMode ? "admin-mode" : "";
-
-  const titleEl = adminMode
-    ? `<input class="week-title-input" value="${esc(w.title)}"
-         onchange="onTitleChange(${w.num},this.value)"
-         oninput="onTitleChange(${w.num},this.value)">`
-    : `<span class="week-title-txt">${esc(w.title)}</span>`;
-
-  const tasksEl = adminMode
-    ? w.tasks.map((t,i) => `
-        <div class="task-edit-row">
-          <input class="task-edit-input" value="${esc(t)}"
-            onchange="onTaskChange(${w.num},${i},this.value)"
-            oninput="onTaskChange(${w.num},${i},this.value)">
-          <button class="task-del-btn" onclick="deleteTask(${w.num},${i})" title="Remove task">×</button>
-        </div>`).join("")
-      + `<div class="task-add-row">
-           <input class="task-add-input" id="add-inp-${w.num}" placeholder="Add task…"
-             onkeydown="if(event.key==='Enter')addTask(${w.num})">
-           <button class="task-add-btn" onclick="addTask(${w.num})">+ Add</button>
-         </div>`
-    : w.tasks.map((t,i) => {
-        const s = taskState[`${w.num}-${i}`] || {};
-        const chk = s.checked ? "checked" : "";
-        const txtClass = s.checked ? "done-txt" : "";
-        const ts = s.checked && s.timestamp
-          ? `<span class="task-ts">${formatTs(s.timestamp)}</span>` : "";
-        return `<div class="task-row" onclick="toggleTask(${w.num},${i})">
-          <div class="cb ${chk}"></div>
-          <div class="task-txt ${txtClass}">${esc(t)}${ts}</div>
-        </div>`;
-      }).join("");
-
-  const saveInd = adminMode
-    ? `<span class="save-indicator" id="save-ind-${w.num}">saved ✓</span>` : "";
-
-  return `<div class="week-card ph-${w.phase} ${isDone?'done':''} ${adminClass}" id="wcard-${w.num}">
-    <div class="week-hd">
-      <span class="week-num-badge">Week ${w.num}</span>
-      ${titleEl}
-      ${saveInd}
-      <span class="week-pct" id="wpct-${w.num}">${done}/${w.tasks.length}</span>
-    </div>
-    <div class="week-body">${tasksEl}</div>
-  </div>`;
+// ── Status helpers — statuses keyed by "taskId:week" ────────────
+// Returns true if ANY tracked week for this task is marked done
+function taskIsDone(taskId) {
+  for (const key in statuses) {
+    if (key.startsWith(taskId + ':') && !key.endsWith(':na') && statuses[key].status === 'done') return true;
+  }
+  return false;
 }
-
-// ── Toggle task ────────────────────────────────────────────
-
-async function toggleTask(wk, idx) {
-  if (adminMode) return; // no toggling while editing
-  const key = `${wk}-${idx}`;
-  const cur = taskState[key] || {};
-  const nowChecked = !cur.checked;
-  const ts = nowChecked ? new Date().toISOString() : "";
-  taskState[key] = { checked: nowChecked, timestamp: ts };
-
-  const row = document.querySelector(`#wcard-${wk} .task-row:nth-child(${idx+1})`);
-  if (row) {
-    const cb  = row.querySelector(".cb");
-    const txt = row.querySelector(".task-txt");
-    cb.className  = "cb" + (nowChecked ? " checked" : "");
-    txt.className = "task-txt" + (nowChecked ? " done-txt" : "");
-    const existing = txt.querySelector(".task-ts");
-    if (existing) existing.remove();
-    if (nowChecked && ts) {
-      const sp = document.createElement("span");
-      sp.className = "task-ts";
-      sp.textContent = formatTs(ts);
-      txt.appendChild(sp);
+// Returns true if task has any 'behind' week and no 'done' weeks
+function taskIsBehind(taskId) {
+  let hasBehind = false;
+  for (const key in statuses) {
+    if (key.startsWith(taskId + ':') && !key.endsWith(':na')) {
+      if (statuses[key].status === 'done') return false;
+      if (statuses[key].status === 'behind') hasBehind = true;
     }
   }
-  updateWeekProgress(wk);
-  updateSummary();
-  await apiPost({ action:"setState", project:activeProject.id, key, checked:nowChecked, timestamp:ts });
+  return hasBehind;
+}
+// Most recent userName who updated any week of this task
+function taskLastUser(taskId) {
+  let latest = null, latestKey = null;
+  for (const key in statuses) {
+    if (key.startsWith(taskId + ':') && statuses[key].userName) {
+      latest = statuses[key].userName;
+    }
+  }
+  return latest;
+}
+function cellKey(taskId, week) { return taskId + ':' + week; }
+let kpis = [];
+let actions = [];
+let weeksOut = 0;
+let activeRole = 'all';
+let demoStatuses = {}; // in-memory status store for demo mode
+
+// ── PIN auth ─────────────────────────────────────────────────
+let pinBuffer = '';
+
+function pinPress(digit) {
+  if (!digit || pinBuffer.length >= 4) return;
+  pinBuffer += digit;
+  updatePinDots();
+  if (pinBuffer.length === 4) setTimeout(submitPin, 120);
 }
 
-function updateWeekProgress(wk) {
-  const w = WEEKS.find(x=>x.num===wk);
-  const done = w.tasks.filter((_,i) => taskState[`${wk}-${i}`]?.checked).length;
-  const el = document.getElementById(`wpct-${wk}`);
-  if (el) el.textContent = `${done}/${w.tasks.length}`;
-  const card = document.getElementById(`wcard-${wk}`);
-  if (card) { done===w.tasks.length ? card.classList.add("done") : card.classList.remove("done"); }
+function pinDelete() {
+  pinBuffer = pinBuffer.slice(0, -1);
+  updatePinDots();
 }
 
-function updateSummary() {
-  const total = WEEKS.reduce((a,w)=>a+w.tasks.length,0);
-  const done  = Object.values(taskState).filter(v=>v.checked).length;
-  const pct   = Math.round(done/total*100);
-  const bar   = document.querySelector(".progress-fill");
-  if (bar) bar.style.width = pct+"%";
-  const stats = document.querySelectorAll(".summary-stat .val");
-  if (stats[0]) stats[0].textContent = done;
-  if (stats[1]) stats[1].textContent = total-done;
-  if (stats[2]) stats[2].textContent = pct+"%";
-  renderSidebar();
+function updatePinDots() {
+  for (let i = 0; i < 4; i++) {
+    document.getElementById('pd' + i).classList.toggle('filled', i < pinBuffer.length);
+  }
 }
 
-// ── Clear ──────────────────────────────────────────────────
-
-function confirmClear() {
-  if (!activeProject) return;
-  if (!confirm(`Clear all checked tasks for "${activeProject.name}"?\n\nThis cannot be undone.`)) return;
-  taskState = {};
-  renderMain(false);
-  apiPost({ action:"clearProject", project:activeProject.id });
+async function submitPin() {
+  document.getElementById('pinError').textContent = 'Checking…';
+  try {
+    const res = await api({ action: 'login', pin: pinBuffer });
+    if (res.ok) {
+      currentUser = res;
+      sessionStorage.setItem('srdUser', JSON.stringify(res));
+      document.getElementById('loginScreen').classList.add('hidden');
+      document.getElementById('mainApp').classList.remove('hidden');
+      initApp();
+    } else {
+      document.getElementById('pinError').textContent = 'Incorrect PIN — try again';
+      pinBuffer = '';
+      updatePinDots();
+    }
+  } catch(e) {
+    document.getElementById('pinError').textContent = 'Error: ' + e.message;
+    pinBuffer = '';
+    updatePinDots();
+  }
 }
 
-// ── Report ─────────────────────────────────────────────────
+function logout() {
+  sessionStorage.removeItem('srdUser');
+  currentUser = null;
+  pinBuffer = '';
+  updatePinDots();
+  document.getElementById('pinError').textContent = '';
+  document.getElementById('mainApp').classList.add('hidden');
+  document.getElementById('loginScreen').classList.remove('hidden');
+}
 
-function openReport() {
-  if (!activeProject) return;
-  const total = WEEKS.reduce((a,w)=>a+w.tasks.length,0);
-  const done  = Object.values(taskState).filter(v=>v.checked).length;
-  const pct   = Math.round(done/total*100);
-  const now   = new Date().toLocaleDateString("en-AU",{day:"2-digit",month:"short",year:"numeric"});
+// ── API helper — GET-based for GAS CORS compatibility ────────
+async function api(body) {
+  if (DEMO_MODE) return demoApi(body);
+  const qs = new URLSearchParams(body).toString();
+  const r = await fetch(GAS_URL + '?' + qs, { redirect: 'follow' });
+  const text = await r.text();
+  try { return JSON.parse(text); }
+  catch(e) { throw new Error('Bad response: ' + text.substring(0,120)); }
+  // dummy to satisfy original structure
+}
 
-  const incomplete = [];
-  WEEKS.forEach(w => {
-    w.tasks.forEach((t,i) => {
-      if (!taskState[`${w.num}-${i}`]?.checked)
-        incomplete.push({ week:`W${w.num}`, task:t });
+function demoApi(body) {
+  const { action } = body;
+  if (action === 'login') {
+    const u = DEMO_USERS[String(body.pin)];
+    return Promise.resolve(u || { ok: false, error: 'Invalid PIN' });
+  }
+  if (action === 'getConfig')   return Promise.resolve(DEMO_CONFIG);
+  if (action === 'getTasks')    return Promise.resolve(DEMO_TASKS);
+  if (action === 'getKPIs')     return Promise.resolve(DEMO_KPIS);
+  if (action === 'getActions')  return Promise.resolve([...DEMO_ACTIONS, ...actions.filter(a => a._local)]);
+  if (action === 'getStatuses') {
+    // demoStatuses keyed by "taskId:week" already (cellKey format)
+    return Promise.resolve(Object.entries(demoStatuses).map(([key, s]) => {
+      const lastColon = key.lastIndexOf(':');
+      const taskId = key.substring(0, lastColon);
+      const week = key.substring(lastColon + 1);
+      return { taskId, week: week === 'na' ? '' : week, status: s.status, userName: s.userName };
+    }));
+  }
+  if (action === 'setStatus') {
+    const key = body.taskId + ':' + (body.week !== undefined && body.week !== '' ? body.week : 'na');
+    demoStatuses[key] = { status: body.status, userName: body.userName };
+    return Promise.resolve({ ok: true });
+  }
+  if (action === 'addAction') {
+    const id = 'ACT-' + Date.now();
+    actions.push({ actionId: id, status: 'Open', priority: body.priority,
+      area: body.area, weekDue: body.weekDue, description: body.description,
+      assignedTo: body.assignedTo, daysLeft: 0, _local: true });
+    return Promise.resolve({ ok: true, id });
+  }
+  if (action === 'getUsers') {
+    return Promise.resolve(Object.entries(DEMO_USERS).map(([pin, u]) => ({
+      userId: u.userId, name: u.name, role: u.role, pin, active: true
+    })));
+  }
+  if (action === 'closeAction') {
+    const a = actions.find(x => x.actionId === body.actionId);
+    if (a) a.status = 'Closed';
+    return Promise.resolve({ ok: true });
+  }
+  if (action === 'saveConfig' || action === 'saveUsers') return Promise.resolve({ ok: true });
+  return Promise.resolve({ ok: true });
+}
+
+// ── App init ─────────────────────────────────────────────────
+async function initApp() {
+  const stored = sessionStorage.getItem('srdUser');
+  if (stored && !currentUser) {
+    currentUser = JSON.parse(stored);
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('mainApp').classList.remove('hidden');
+  }
+  if (!currentUser) return;
+
+  document.getElementById('userChip').textContent = currentUser.name + ' · ' + currentUser.role;
+
+  if (currentUser.role === 'Admin') {
+    document.getElementById('tab-setup').classList.remove('hidden');
+    document.getElementById('tab-report').classList.remove('hidden');
+  }
+
+  // Show admin-only tab indicator (none on mobile for now)
+  if (currentUser.role !== 'Admin') {
+    // restrict to own role on checklist by default
+    activeRole = currentUser.role;
+  }
+
+  await loadAll();
+}
+
+async function loadAll() {
+  const [cfg, t, s, k, a] = await Promise.all([
+    api({ action: 'getConfig' }),
+    api({ action: 'getTasks' }),
+    api({ action: 'getStatuses' }),
+    api({ action: 'getKPIs' }),
+    api({ action: 'getActions' }),
+  ]);
+
+  config = cfg;
+  tasks = t;
+  kpis = k;
+  actions = a;
+
+  // Build status map keyed by "taskId:week" for per-cell gantt tracking
+  statuses = {};
+  s.forEach(r => {
+    const wk = (r.week !== undefined && r.week !== '' && r.week !== null) ? r.week : 'na';
+    statuses[r.taskId + ':' + wk] = { status: r.status, userName: r.userName };
+  });
+  if (DEMO_MODE) Object.entries(demoStatuses).forEach(([id,v]) => { statuses[id] = v; });
+
+  // Compute weeks out — parse as local date to avoid UTC offset shifting the day
+  const [sy, sm, sd] = (config.startDate || '2099-01-01').split('-').map(Number);
+  const start = new Date(sy, sm - 1, sd);
+  weeksOut = Math.round((start - new Date()) / (7 * 24 * 60 * 60 * 1000));
+
+  // Top bar
+  document.getElementById('shutName').textContent = config.shutdownName || 'Shutdown';
+  document.getElementById('weeksPill').textContent = weeksOut >= 0 ? 'W-' + weeksOut : 'W+' + Math.abs(weeksOut);
+  document.getElementById('weeksPill').style.background = weeksOut <= 2 ? 'var(--red)' : weeksOut <= 5 ? 'var(--amber)' : 'var(--amber)';
+
+  // Readiness
+  const pct = readinessPctFor(tasks);
+  document.getElementById('readinessBar').style.width = pct + '%';
+  document.getElementById('readinessPct').textContent = pct + '%';
+
+  renderDashboard();
+  renderChecklist();
+  renderKpis();
+  renderActions();
+  renderProgress();
+}
+
+// ── Dashboard ────────────────────────────────────────────────
+function renderDashboard() {
+  const pct = readinessPctFor(tasks);
+  const behind = tasks.filter(t => taskIsBehind(t.taskId)).length;
+  const targetPct = targetPctForCells(tasks);
+  const variance = pct - targetPct;
+  const openActions = actions.filter(a => a.status === 'Open' || a.status === 'Overdue').length;
+  const closedActions = actions.filter(a => a.status === 'Closed').length;
+
+  // ── Header block ──
+  const [sy, sm, sd] = (config.startDate || '2099-01-01').split('-').map(Number);
+  const startDateObj = new Date(sy, sm - 1, sd);
+  document.getElementById('dh-name').textContent = (config.shutdownName || 'Shutdown').toUpperCase();
+  document.getElementById('dh-today').textContent = new Date().toLocaleDateString('en-AU');
+  document.getElementById('dh-start').textContent = startDateObj.toLocaleDateString('en-AU', { day:'2-digit', month:'2-digit', year:'2-digit' });
+  document.getElementById('dh-duration').textContent = config.duration || '—';
+  document.getElementById('dh-weeksout').textContent = (weeksOut >= 0 ? weeksOut : Math.abs(weeksOut)) + (weeksOut >= 0 ? ' Weeks' : ' Wks post');
+
+  document.getElementById('dh-target').textContent = targetPct + '%';
+
+  const actualEl = document.getElementById('dh-actual');
+  actualEl.textContent = pct + '%';
+  const onPace = pct >= targetPct;
+  document.getElementById('dh-actual-cell').classList.toggle('on-pace', onPace);
+
+  // ── Phase chevrons (Planning / Scheduling / Execution) ──
+  const phaseColors = { Planning: '#5a6a80', Scheduling: '#8a98a8', Execution: '#c4ccd6' };
+  const phases = ['Planning', 'Scheduling', 'Execution'];
+  // Determine active phase by weeksOut: Planning > 5wks out, Scheduling 1-5wks, Execution <1wk
+  let activePhase = weeksOut > 5 ? 'Planning' : weeksOut >= 1 ? 'Scheduling' : 'Execution';
+  document.getElementById('dashPhases').innerHTML = phases.map(p => {
+    const isActive = p === activePhase;
+    return `<div class="dash-phase" style="background:${isActive ? 'var(--navy)' : '#b8c0cc'}">${p}</div>`;
+  }).join('');
+
+  // ── KPI summary strip (compact cells with target vs actual) ──
+  document.getElementById('dashKpiStrip').innerHTML = kpis.map(k => {
+    const days = Number(k.daysLeft);
+    const kpct = Number(k.actualPct) || 0;
+    const tpct = Number(k.targetPct) || 0;
+    let cls = 'future', barColor = 'var(--teal)';
+    if (kpct >= 100)     { cls = 'ok';      barColor = 'var(--green)'; }
+    else if (days < 0)   { cls = 'overdue'; barColor = 'var(--red)'; }
+    else if (days < 14)  { cls = 'soon';    barColor = 'var(--amber)'; }
+    return `<div class="dash-kpi-cell ${cls}">
+      <div class="dash-kpi-cell-name">${k.name}</div>
+      <div class="dash-kpi-cell-meta"><span>W${k.weekDue}</span><span>${kpct}% / ${tpct}%</span></div>
+      <div class="dash-kpi-cell-bar" style="position:relative">
+        <div class="dash-kpi-cell-fill" style="width:${kpct}%;background:${barColor}"></div>
+        <div style="position:absolute;top:-1px;left:${tpct}%;width:2px;height:6px;background:var(--navy)"></div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // ── Role readiness timeline table ──
+  const roles = [...new Set(tasks.map(t => t.role))];
+  const maxWeek = 12;
+  const weekCols = [];
+  for (let w = maxWeek; w >= -2; w--) weekCols.push(w);
+
+  let timelineHtml = '<thead><tr><th class="gantt-task-header" style="position:static">Weekly Totals</th>';
+  weekCols.forEach(w => {
+    const isCurrent = w === weeksOut;
+    timelineHtml += `<th class="gantt-week-header ${isCurrent ? 'gantt-current' : ''}">${w}</th>`;
+  });
+  timelineHtml += '</tr></thead><tbody>';
+
+  roles.forEach(role => {
+    const roleTasks = tasks.filter(t => t.role === role);
+
+    // Build the full set of trackable cells (taskId, week) for this role
+    const allCells = [];
+    roleTasks.forEach(t => {
+      const weekDue = Number(t.weekDue);
+      const duration = Number(t.duration) || 1;
+      const startWeek = weekDue + duration - 1;
+      for (let w = startWeek; w >= weekDue; w--) {
+        allCells.push({ taskId: t.taskId, week: w });
+      }
+    });
+
+    // Actual % for this role = cells ticked done out of ALL tracked cells (not just due-by-now)
+    const doneCells = allCells.filter(c => statuses[cellKey(c.taskId, c.week)]?.status === 'done');
+    const pctRole = allCells.length ? Math.round(doneCells.length / allCells.length * 100) : 0;
+
+    timelineHtml += `<tr><td class="role-label">${role} <span style="float:right;font-weight:700">${pctRole}%</span></td>`;
+
+    weekCols.forEach(w => {
+      // Cells that exist for this role at this exact week (within some task's tracked range)
+      const cellsAtWeek = allCells.filter(c => c.week === w);
+      let cellColor = 'transparent';
+      let cellText = '';
+
+      if (cellsAtWeek.length > 0) {
+        const statusesAtWeek = cellsAtWeek.map(c => statuses[cellKey(c.taskId, c.week)]?.status || 'none');
+        const doneAtWeek = statusesAtWeek.filter(s => s === 'done').length;
+        const behindAtWeek = statusesAtWeek.filter(s => s === 'behind').length;
+        const cellPct = Math.round(doneAtWeek / cellsAtWeek.length * 100);
+
+        if (doneAtWeek > 0 || behindAtWeek > 0) {
+          cellText = cellPct + '%';
+          if (cellPct >= 100) cellColor = '#1D9E75';        // fully done — green
+          else if (doneAtWeek > 0) cellColor = '#EF9F27';     // partially done — amber
+          else cellColor = '#E24B4A';                          // marked behind, none done — red
+        } else {
+          cellColor = '#dde4ed';                                // tracked here, untouched — grey, regardless of timing
+        }
+      }
+      // no task tracked at this week at all — stays transparent
+
+      const textColor = cellColor === 'transparent' ? 'inherit' : (cellColor === '#dde4ed' ? 'var(--text-muted)' : 'white');
+      timelineHtml += `<td style="background:${cellColor};color:${textColor};font-weight:700">${cellText}</td>`;
+    });
+    timelineHtml += '</tr>';
+  });
+  timelineHtml += '</tbody>';
+  document.getElementById('dashTimelineTable').innerHTML = timelineHtml;
+
+  // ── Action pie chart ──
+  document.getElementById('dh-actions-done').textContent = closedActions;
+  document.getElementById('dh-actions-open').textContent = openActions;
+  const totalActionsForPie = closedActions + openActions;
+  const openFraction = totalActionsForPie ? openActions / totalActionsForPie : 0;
+  const pieSvg = document.getElementById('dashPieSvg');
+  if (totalActionsForPie === 0) {
+    pieSvg.innerHTML = '<circle cx="60" cy="60" r="50" fill="var(--border)"/><text x="60" y="64" text-anchor="middle" font-size="11" fill="var(--text-muted)">No actions</text>';
+  } else {
+    const angle = openFraction * 360;
+    const r = 50, cx = 60, cy = 60;
+    function polarToXY(deg) {
+      const rad = (deg - 90) * Math.PI / 180;
+      return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)];
+    }
+    const [x1,y1] = polarToXY(0);
+    const [x2,y2] = polarToXY(angle);
+    const largeArc = angle > 180 ? 1 : 0;
+    const openPath = angle > 0 ? `M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${largeArc} 1 ${x2},${y2} Z` : '';
+    pieSvg.innerHTML = `
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="var(--green)"/>
+      ${openPath ? `<path d="${openPath}" fill="var(--red)"/>` : ''}
+      <circle cx="${cx}" cy="${cy}" r="28" fill="var(--white)"/>
+      <text x="${cx}" y="${cy+4}" text-anchor="middle" font-size="14" font-weight="700" fill="var(--text)">${Math.round((1-openFraction)*100)}%</text>
+    `;
+  }
+
+  // ── Readiness curve (Planned vs Actual vs Target, no error bars) ──
+  document.getElementById('dashCurveTitle').textContent = (config.shutdownName || 'Shutdown') + ' — Readiness Curve';
+  const curveWeeks = [];
+  for (let w = 12; w >= -2; w--) curveWeeks.push(w);
+  const W = 480, H = 220, padL = 30, padR = 10, padT = 14, padB = 24;
+  const plotW = W - padL - padR, plotH = H - padT - padB;
+  const xFor = (i) => padL + (i / (curveWeeks.length - 1)) * plotW;
+  const yFor = (val) => padT + (1 - val/100) * plotH;
+
+  // Target & Actual curves driven by real tracked cell counts, not an abstract ramp
+  const allProjectCells = allTrackedCells(tasks);
+  const totalCellCount = allProjectCells.length || 1;
+
+  // Target: cumulative % of all cells that are "due" (week >= w) as w decreases — i.e. at week w, what fraction of the whole plan should be done by then
+  const targetSeries = curveWeeks.map(w => {
+    const dueByW = allProjectCells.filter(c => c.week >= w).length;
+    return Math.round(dueByW / totalCellCount * 100);
+  });
+  // Actual: cumulative S-curve from 0% at W12, rising to the overall Actual % at the current week, then flat/stopped
+  const actualSeries = curveWeeks.map(w => {
+    if (w < weeksOut) return null; // future — not yet happened, don't draw
+    // Cells due by this point in time (week >= w) that are also ticked done
+    const doneByW = allProjectCells.filter(c => c.week >= w && statuses[cellKey(c.taskId, c.week)]?.status === 'done').length;
+    return Math.round(doneByW / totalCellCount * 100);
+  });
+
+  function pathFor(series) {
+    let d = '';
+    series.forEach((v, i) => {
+      if (v === null || v === undefined) return;
+      const x = xFor(i), y = yFor(v);
+      d += (d === '' ? 'M' : 'L') + x + ',' + y + ' ';
+    });
+    return d.trim();
+  }
+
+  const gridLines = [0,20,40,60,80,100].map(v =>
+    `<line x1="${padL}" y1="${yFor(v)}" x2="${W-padR}" y2="${yFor(v)}" stroke="var(--border)" stroke-width="1"/>
+     <text x="${padL-6}" y="${yFor(v)+3}" text-anchor="end" font-size="8" fill="var(--text-muted)">${v}%</text>`
+  ).join('');
+
+  const xLabels = curveWeeks.map((w,i) =>
+    `<text x="${xFor(i)}" y="${H-6}" text-anchor="middle" font-size="8" fill="var(--text-muted)">${w}</text>`
+  ).join('');
+
+  document.getElementById('dashCurveSvg').innerHTML = `
+    ${gridLines}
+    <path d="${pathFor(targetSeries)}" fill="none" stroke="var(--teal)" stroke-width="2"/>
+    <path d="${pathFor(actualSeries)}" fill="none" stroke="var(--amber)" stroke-width="2.5"/>
+    ${xLabels}
+    <line x1="${xFor(curveWeeks.indexOf(weeksOut)>=0?curveWeeks.indexOf(weeksOut):0)}" y1="${padT}" x2="${xFor(curveWeeks.indexOf(weeksOut)>=0?curveWeeks.indexOf(weeksOut):0)}" y2="${H-padB}" stroke="var(--text-muted)" stroke-width="1" stroke-dasharray="3,3"/>
+    <rect x="${padL}" y="2" width="8" height="2" fill="var(--teal)"/><text x="${padL+12}" y="5" font-size="8" fill="var(--text-muted)">Target</text>
+    <rect x="${padL+60}" y="2" width="8" height="2" fill="var(--amber)"/><text x="${padL+72}" y="5" font-size="8" fill="var(--text-muted)">Actual</text>
+  `;
+}
+
+// ── KPI tab (tiles, separate from dashboard) ───────────────────
+function renderKpis() {
+  const kpiHtml = kpis.map((k, idx) => {
+    const days = Number(k.daysLeft);
+    const pct  = Number(k.actualPct) || 0;
+    const targetPct = Number(k.targetPct) || 0;
+    let cls = 'future', label = 'W' + k.weekDue;
+    if (pct >= 100)   { cls = 'ok';      label = 'Done'; }
+    else if (days < 0)  { cls = 'overdue'; label = 'Overdue'; }
+    else if (days < 14) { cls = 'soon';    label = 'Due soon'; }
+
+    const barColor = cls === 'ok' ? 'var(--green)' : cls === 'overdue' ? 'var(--red)' : cls === 'soon' ? 'var(--amber)' : 'var(--teal)';
+    const daysText = days < 0
+      ? `${Math.abs(days)} days overdue`
+      : days === 0 ? 'Due today'
+      : `${days} days remaining`;
+
+    const linkedTasks = Array.isArray(k.linkedTasks) ? k.linkedTasks : [];
+    const linkedHtml = linkedTasks.length === 0
+      ? '<div class="kpi-no-tasks">No tasks directly linked to this milestone</div>'
+      : linkedTasks.map(t => {
+          const isDone   = t.status === 'done';
+          const isBehind = t.status === 'behind';
+          let chk = '<div class="klt-check"></div>';
+          if (isDone)   chk = '<div class="klt-check done"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>';
+          if (isBehind) chk = '<div class="klt-check behind"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>';
+          return `<div class="kpi-linked-task">
+            ${chk}
+            <div class="klt-info">
+              <div class="klt-desc">${t.description}</div>
+              <div class="klt-role">${t.role}${t.userName ? ' · <span class="klt-who">' + t.userName + '</span>' : ''}</div>
+            </div>
+          </div>`;
+        }).join('');
+
+    return `<div class="kpi-card" id="kpi-card-${idx}" onclick="toggleKpi(${idx})">
+      <div class="kpi-card-header">
+        <div class="kpi-dot ${cls}"></div>
+        <div class="kpi-info">
+          <div class="kpi-name">${k.name}</div>
+          <div class="kpi-cat">${k.category}</div>
+        </div>
+        <div class="kpi-right">
+          <span class="kpi-badge ${cls}">${label}</span>
+          <span class="kpi-week">W${k.weekDue}</span>
+        </div>
+        <span class="kpi-chevron">▼</span>
+      </div>
+      <div class="kpi-expand-body">
+        <div class="kpi-days-line">
+          <span style="color:${cls==='overdue'?'var(--red)':cls==='soon'?'var(--amber-dark)':'var(--text-secondary)'}">${daysText}</span>
+          <span class="kpi-pct-label" style="color:${barColor}">${pct}% <span style="color:var(--text-muted);font-weight:500">/ ${targetPct}% target</span></span>
+        </div>
+        <div class="kpi-progress-wrap" style="position:relative">
+          <div class="kpi-progress-fill" style="width:${pct}%;background:${barColor}"></div>
+          <div style="position:absolute;top:-1px;left:${targetPct}%;width:2px;height:7px;background:var(--navy)" title="Target: ${targetPct}%"></div>
+        </div>
+        <div class="kpi-linked-tasks">${linkedHtml}</div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('kpiList').innerHTML = kpiHtml || '<div class="empty-state">No KPIs loaded</div>';
+}
+
+// ── KPI expand/collapse — tiles open by default, tap to collapse ──
+function toggleKpi(idx) {
+  const card = document.getElementById('kpi-card-' + idx);
+  if (!card) return;
+  card.classList.toggle('collapsed');
+}
+
+// ── Checklist — gantt-style weekly grid ─────────────────────────
+let rangeEditMode = false;
+let rangeEditTaskId = null; // task currently mid-selection (first click made)
+let rangeEditFirstWeek = null;
+
+function toggleRangeEditMode() {
+  rangeEditMode = !rangeEditMode;
+  rangeEditTaskId = null;
+  document.getElementById('rangeEditBtn').classList.toggle('active', rangeEditMode);
+  document.getElementById('rangeEditHint').classList.toggle('hidden', !rangeEditMode);
+  renderChecklist();
+}
+
+function renderChecklist() {
+  const roles = [...new Set(tasks.map(t => t.role))];
+
+  // Role filter
+  let filterHtml = `<button class="role-chip ${activeRole === 'all' ? 'active' : ''}" onclick="setRole('all')">All roles</button>`;
+  roles.forEach(r => {
+    filterHtml += `<button class="role-chip ${activeRole === r ? 'active' : ''}" onclick="setRole('${r.replace(/'/g,"\\'")}')">${r}</button>`;
+  });
+  document.getElementById('roleFilterWrap').innerHTML = filterHtml;
+
+  const visibleRoles = activeRole === 'all' ? roles : [activeRole];
+
+  // Week columns: W12 down to W-2
+  const weekCols = [];
+  for (let w = 12; w >= -2; w--) weekCols.push(w);
+
+  let html = '<thead><tr><th class="gantt-task-header">Task</th>';
+  weekCols.forEach(w => {
+    const isCurrent = w === weeksOut;
+    html += `<th class="gantt-week-header ${isCurrent ? 'gantt-current' : ''}">${w}</th>`;
+  });
+  html += '</tr></thead><tbody>';
+
+  visibleRoles.forEach(role => {
+    const roleTasks = tasks.filter(t => t.role === role);
+    const donePct = readinessPctFor(roleTasks);
+
+    html += `<tr class="gantt-role-row"><td colspan="${weekCols.length + 1}">${role} — ${donePct}% complete</td></tr>`;
+
+    roleTasks.forEach(t => {
+      const canEdit = currentUser.role === 'Admin' || currentUser.role === role;
+      const weekDue = Number(t.weekDue);
+      const duration = Number(t.duration) || 1;
+      // Task spans from (weekDue + duration - 1) down to weekDue (counting down to zero)
+      const startWeek = weekDue + duration - 1;
+      const endWeek = weekDue;
+
+      html += `<tr class="gantt-task-row"><td class="gantt-task-name">${t.description}${t.kpiLink ? ` <span class="kpi-tag">${t.kpiLink}</span>` : ''}</td>`;
+
+      weekCols.forEach(w => {
+        const inRange = w <= startWeek && w >= endWeek;
+        let cellClass = 'gantt-week-cell';
+        let cellContent = '';
+        if (rangeEditMode) {
+          // In range-edit mode every cell is clickable for range-setting
+          if (inRange) cellClass += ' in-range range-target';
+          if (rangeEditTaskId === t.taskId && w === startWeek) cellClass += ' range-pending-start';
+          const onclick = `onclick="rangeEditClick('${t.taskId.replace(/'/g,"\\'")}',${w})"`;
+          html += `<td class="${cellClass}" ${onclick}></td>`;
+          return;
+        }
+        if (inRange) {
+          cellClass += ' in-range';
+          const cellStatus = statuses[cellKey(t.taskId, w)]?.status || 'none';
+          if (cellStatus === 'done') { cellClass += ' done'; cellContent = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>'; }
+          else if (cellStatus === 'behind') { cellClass += ' behind'; cellContent = '<svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'; }
+        }
+        if (w === weeksOut) cellClass += ' current-week';
+        if (!canEdit) cellClass += ' gantt-readonly';
+        const onclick = (canEdit && inRange) ? `onclick="toggleGanttCell('${t.taskId.replace(/'/g,"\\'")}','${role.replace(/'/g,"\\'")}',${w})"` : '';
+        html += `<td class="${cellClass}" ${onclick}>${cellContent}</td>`;
+      });
+
+      html += '</tr>';
     });
   });
 
-  document.getElementById("report-box").innerHTML = `
-    <div class="report-header">
-      <div>
-        <h2>${esc(activeProject.name)}</h2>
-        <p>Planning report &mdash; generated ${now}</p>
-      </div>
-      <button class="btn btn-ghost btn-sm" onclick="closeReport()">✕ Close</button>
-    </div>
-    <div class="report-body">
-      <div class="report-section">
-        <h3>Overall progress</h3>
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
-          <div class="progress-track" style="height:10px"><div class="report-fill" style="width:${pct}%"></div></div>
-          <strong style="font-size:15px;color:var(--navy)">${pct}%</strong>
+  html += '</tbody>';
+  document.getElementById('ganttTable').innerHTML = html;
+}
+
+function updateReadinessBar() {
+  const pct = readinessPctFor(tasks);
+  document.getElementById('readinessBar').style.width = pct + '%';
+  document.getElementById('readinessPct').textContent = pct + '%';
+}
+
+function setRole(r) {
+  activeRole = r;
+  renderChecklist();
+}
+
+async function rangeEditClick(taskId, week) {
+  if (currentUser.role !== 'Admin') { showToast('Only Admin can adjust tracked weeks'); return; }
+
+  if (rangeEditTaskId === null || rangeEditTaskId !== taskId) {
+    // First click on this task — set as pending start
+    rangeEditTaskId = taskId;
+    rangeEditFirstWeek = week;
+    renderChecklist();
+    showToast('Now click the end week for this task');
+    return;
+  }
+
+  // Second click — finalize range
+  const firstWeek = rangeEditFirstWeek;
+  const w1 = Math.max(firstWeek, week); // higher number = earlier/start
+  const w2 = Math.min(firstWeek, week); // lower number = later/end (weekDue)
+  const newWeekDue = w2;
+  const newDuration = (w1 - w2) + 1;
+
+  const task = tasks.find(t => t.taskId === taskId);
+  if (task) {
+    task.weekDue = newWeekDue;
+    task.duration = newDuration;
+  }
+
+  rangeEditTaskId = null;
+  renderChecklist();
+  showToast(`Tracking W${w1} to W${w2} (${newDuration} wk${newDuration!==1?'s':''})`);
+
+  await api({ action: 'updateTaskRange', taskId, weekDue: newWeekDue, duration: newDuration });
+}
+
+async function toggleGanttCell(taskId, role, week) {
+  if (currentUser.role !== 'Admin' && currentUser.role !== role) return;
+  const key = cellKey(taskId, week);
+  const current = statuses[key]?.status || 'none';
+  const next = current === 'none' ? 'done' : current === 'done' ? 'behind' : 'none';
+  statuses[key] = { status: next, userName: currentUser.name };
+
+  updateReadinessBar();
+  renderChecklist();
+  renderDashboard();
+  if (activeRole === role || activeRole === 'all') renderProgress();
+
+  await api({ action: 'setStatus', taskId, status: next, userId: currentUser.userId, userName: currentUser.name, week });
+}
+
+// ── Actions ──────────────────────────────────────────────────
+function renderActions() {
+  const filter = document.getElementById('actionFilter').value;
+  const filtered = actions.filter(a => {
+    if (filter && a.priority !== filter) return false;
+    return true;
+  });
+
+  if (!filtered.length) {
+    document.getElementById('actionListContainer').innerHTML = '<div class="empty-state">No actions match this filter</div>';
+    return;
+  }
+
+  const html = filtered.map(a => {
+    const isOverdue = Number(a.daysLeft) < 0;
+    const priClass = a.priority === 'High' ? 'high' : 'medium';
+    const isClosed = a.status === 'Closed';
+    const canDelete = currentUser.role === 'Admin';
+    return `<div class="action-card ${isClosed ? 'action-closed' : ''}">
+      <div class="action-card-body">
+        <div class="action-priority-row">
+          <div class="priority-dot ${priClass}"></div>
+          <span class="priority-label ${priClass}">${a.priority}</span>
+          ${isClosed ? '<span class="action-done-badge">Completed</span>' : ''}
+          ${canDelete ? `<button class="action-delete-btn" onclick="deleteActionItem('${a.actionId}')" title="Delete this action">
+            <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          </button>` : ''}
         </div>
-        <p style="font-size:12px;color:var(--muted)">${done} of ${total} tasks complete &nbsp;|&nbsp; ${total-done} remaining</p>
+        <div class="action-text">${a.description}</div>
       </div>
-      <div class="report-section">
-        <h3>Completion by week</h3>
-        ${WEEKS.map(w=>{
-          const wd = w.tasks.filter((_,i)=>taskState[`${w.num}-${i}`]?.checked).length;
-          const wp = Math.round(wd/w.tasks.length*100);
-          return `<div class="report-week-row">
-            <div class="report-week-label">W${w.num} — ${esc(w.title)}</div>
-            <div class="report-track"><div class="report-fill" style="width:${wp}%"></div></div>
-            <div class="report-pct">${wp}%</div>
-          </div>`;
-        }).join("")}
+      <div class="action-footer">
+        <span>Assigned: <strong>${a.assignedTo || '—'}</strong></span>
+        <span>Due: <strong>W${a.weekDue}</strong></span>
+        ${isOverdue && !isClosed ? `<span class="overdue-tag">${Math.abs(a.daysLeft)} days overdue</span>` : ''}
+        ${!isClosed ? `<button class="complete-action-btn" onclick="completeAction('${a.actionId}')">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Complete
+        </button>` : ''}
       </div>
-      ${incomplete.length ? `
-      <div class="report-section">
-        <h3>Incomplete tasks (${incomplete.length})</h3>
-        ${incomplete.map(x=>`<div class="incomplete-item">
-          <span class="incomplete-week">${x.week}</span>
-          <span>${esc(x.task)}</span>
-        </div>`).join("")}
-      </div>` : `
-      <div class="report-section">
-        <h3>Incomplete tasks</h3>
-        <p style="font-size:12px;color:var(--success);font-weight:500">✓ All tasks complete</p>
-      </div>`}
-      <div class="report-section">
-        <h3>Task completion timestamps</h3>
-        ${(()=>{
-          const rows=[];
-          WEEKS.forEach(w=>{ w.tasks.forEach((t,i)=>{
-            const s=taskState[`${w.num}-${i}`];
-            if(s?.checked&&s.timestamp) rows.push(`<div class="incomplete-item">
-              <span class="incomplete-week">W${w.num}</span>
-              <span style="flex:1">${esc(t)}</span>
-              <span style="font-size:10px;color:var(--muted);white-space:nowrap;margin-left:8px">${formatTs(s.timestamp)}</span>
-            </div>`);
-          });});
-          return rows.length ? rows.join("") : `<p style="font-size:12px;color:var(--muted)">No tasks complete yet.</p>`;
-        })()}
+    </div>`;
+  }).join('');
+  document.getElementById('actionListContainer').innerHTML = html;
+}
+
+async function deleteActionItem(actionId) {
+  const action = actions.find(a => a.actionId === actionId);
+  if (!action) return;
+  if (!confirm(`Delete this action permanently?\n\n"${action.description}"\n\nThis cannot be undone.`)) return;
+  actions = actions.filter(a => a.actionId !== actionId);
+  renderActions();
+  renderDashboard(); // refresh action pie chart
+  await api({ action: 'deleteAction', actionId });
+  showToast('Action deleted');
+}
+
+async function completeAction(actionId) {
+  const action = actions.find(a => a.actionId === actionId);
+  if (!action) return;
+  action.status = 'Closed';
+  renderActions();
+  renderDashboard(); // refresh action pie chart
+  await api({ action: 'closeAction', actionId, closedBy: currentUser.name });
+  showToast('Action marked complete');
+}
+
+function openModal() { document.getElementById('modalOverlay').classList.add('open'); }
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+
+async function saveAction() {
+  const desc = document.getElementById('newActionDesc').value.trim();
+  if (!desc) { alert('Please enter a description'); return; }
+  const body = {
+    action: 'addAction',
+    description: desc,
+    priority: document.getElementById('newActionPriority').value,
+    weekDue: document.getElementById('newActionWeek').value,
+    area: document.getElementById('newActionArea').value,
+    assignedTo: document.getElementById('newActionAssigned').value,
+    raisedBy: currentUser.name,
+  };
+  const result = await api(body);
+  if (result.ok) {
+    actions.push({ ...body, actionId: result.id, status: 'Open', daysLeft: 0 });
+    renderActions();
+    closeModal();
+    document.getElementById('newActionDesc').value = '';
+  }
+}
+
+// ── Progress ─────────────────────────────────────────────────
+function renderProgress() {
+  const roles = [...new Set(tasks.map(t => t.role))];
+  const html = roles.map(role => {
+    const roleTasks = tasks.filter(t => t.role === role);
+    const done = roleTasks.filter(t => taskIsDone(t.taskId)).length;
+    const behind = roleTasks.filter(t => taskIsBehind(t.taskId)).length;
+    const pct = readinessPctFor(roleTasks);
+    const targetPct = targetPctForCells(roleTasks);
+    const onPace = pct >= targetPct;
+    const cls = onPace ? 'success' : 'danger';
+    const barColor = onPace ? 'var(--green)' : 'var(--red)';
+    return `<div class="role-row">
+      <div class="role-row-top">
+        <span class="role-row-name">${role}</span>
+        <span class="role-row-pct-group">
+          <span class="role-row-pct ${cls}">${pct}%</span>
+          <span class="role-row-target">/ ${targetPct}% target</span>
+        </span>
       </div>
-    </div>
-    <div class="report-footer">
-      <button class="btn btn-outline" onclick="closeReport()">Close</button>
-      <button class="btn btn-gold" onclick="window.print()">Print / Save as PDF</button>
+      <div class="role-bar-wrap">
+        <div class="role-bar" style="width:${pct}%;background:${barColor}"></div>
+        <div class="role-bar-target-marker" style="left:${targetPct}%"></div>
+      </div>
+      <div class="role-row-meta">
+        <span><strong>${done}</strong> done</span>
+        <span><strong>${behind}</strong> behind</span>
+        <span><strong>${roleTasks.length - done - behind}</strong> not started</span>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('progressContainer').innerHTML = html || '<div class="empty-state">No data yet</div>';
+}
+
+// ── Report ────────────────────────────────────────────────────
+let reportAudience = 'internal';
+let lastReportText = '';
+
+function setAudience(aud) {
+  reportAudience = aud;
+  document.getElementById('aud-internal').classList.toggle('active', aud === 'internal');
+  document.getElementById('aud-management').classList.toggle('active', aud === 'management');
+}
+
+async function generateReport() {
+  const btn = document.getElementById('generateBtn');
+  const output = document.getElementById('reportOutput');
+  const body = document.getElementById('reportBody');
+  btn.disabled = true;
+  btn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg> Generating…';
+
+  output.classList.add('visible');
+  body.innerHTML = '<div class="report-streaming">Analysing shutdown data<span class="typing-dots"><span></span><span></span><span></span></span></div>';
+
+  // Build data snapshot for prompt
+  const totalTasks = tasks.length;
+  const doneTasks = tasks.filter(t => taskIsDone(t.taskId)).length;
+  const behindTasks = tasks.filter(t => taskIsBehind(t.taskId)).length;
+  const pct = readinessPctFor(tasks);
+  const targetPct = targetPctForCells(tasks);
+  const variance = pct - targetPct;
+
+  // Role progress
+  const roleProgress = [...new Set(tasks.map(t => t.role))].map(role => {
+    const rt = tasks.filter(t => t.role === role);
+    const d = rt.filter(t => taskIsDone(t.taskId)).length;
+    const b = rt.filter(t => taskIsBehind(t.taskId)).length;
+    return { role, total: rt.length, done: d, behind: b, pct: readinessPctFor(rt) };
+  });
+
+  // KPI status
+  const kpiSummary = kpis.map(k => ({
+    name: k.name, category: k.category, weekDue: k.weekDue,
+    daysLeft: Number(k.daysLeft), actualPct: Number(k.actualPct) || 0
+  }));
+
+  // Open actions
+  const openActions = actions.filter(a => a.status === 'Open' || a.status === 'Overdue');
+  const highActions = openActions.filter(a => a.priority === 'High');
+
+  const audienceNote = reportAudience === 'management'
+    ? 'The audience is senior management / client leadership. Use professional, concise language. Focus on risk, key decisions needed, and overall readiness confidence. Avoid granular task detail.'
+    : 'The audience is the internal shutdown planning team. Be direct and specific. Call out exactly what is behind, who owns it, and what needs to happen this week.';
+
+  const prompt = `You are a shutdown readiness analyst for a mining maintenance shutdown. Generate a structured readiness report based on the following live data.
+
+SHUTDOWN: ${config.shutdownName || 'Shutdown'} | ${config.revision || ''} | Start date: ${config.startDate} | ${Math.abs(weeksOut)} weeks ${weeksOut >= 0 ? 'out' : 'post shutdown'}
+
+OVERALL READINESS: ${pct}% actual vs ${targetPct}% target | Variance: ${variance}% | ${doneTasks}/${totalTasks} tasks done | ${behindTasks} behind
+
+ROLE PROGRESS:
+${roleProgress.map(r => `- ${r.role}: ${r.pct}% (${r.done}/${r.total} done, ${r.behind} behind)`).join('\n')}
+
+KPI MILESTONES:
+${kpiSummary.map(k => {
+  const status = k.actualPct >= 100 ? 'COMPLETE' : k.daysLeft < 0 ? `OVERDUE by ${Math.abs(k.daysLeft)} days` : k.daysLeft < 14 ? `DUE SOON (${k.daysLeft} days)` : `On track (${k.daysLeft} days remaining)`;
+  return `- ${k.name} (${k.category}, W${k.weekDue}): ${k.actualPct}% complete — ${status}`;
+}).join('\n')}
+
+OPEN ACTIONS: ${openActions.length} total | ${highActions.length} high priority
+${highActions.slice(0, 5).map(a => `- [HIGH] ${a.description} | Assigned: ${a.assignedTo || 'unassigned'}`).join('\n')}
+${openActions.filter(a => a.priority !== 'High').slice(0, 3).map(a => `- [${a.priority}] ${a.description}`).join('\n')}
+
+${audienceNote}
+
+Generate a structured report with these sections:
+1. Executive Summary (2-3 sentences, overall readiness confidence)
+2. Key Metrics (reference the data above — readiness %, variance, weeks out)
+3. Role Progress (highlight best and worst performing roles, specific concerns)
+4. KPI Milestone Status (group overdue/at risk/on track, flag critical path items)
+5. Open Actions Summary (high priority items, any patterns or systemic issues)
+6. Recommended Focus Areas (top 3-5 specific actions for the coming week, in priority order)
+${reportAudience === 'management' ? '7. Risk Assessment (overall risk rating: Low/Medium/High/Critical, and key risk factors)' : ''}
+
+Use markdown headings (##) and bullet points. Be specific and data-driven. Do not pad with generic statements.`;
+
+  try {
+    // Route through GAS backend to avoid CORS issues
+    // Use POST for report — prompt is too long for GET URL
+    const qs = new URLSearchParams({ action: 'generateReport' }).toString();
+    const postRes = await fetch(GAS_URL + '?' + qs, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      redirect: 'follow',
+      body: encodeURIComponent(prompt)
+    });
+    const postText = await postRes.text();
+    let res;
+    try { res = JSON.parse(postText); } catch(e) { throw new Error('Bad response: ' + postText.slice(0,100)); }
+    if (res.error) throw new Error(res.error);
+    const text = res.text || '';
+    lastReportText = text;
+
+    // Render markdown to HTML
+    const html = text
+      .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+      .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/^- (.+)$/gm, '<li>$1</li>')
+      .replace(/(<li>.*<\/li>\n?)+/g, m => '<ul>' + m + '</ul>')
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/^(?!<[hul])/gm, '')
+      .replace(/<p><\/p>/g, '');
+
+    // Prepend stat grid
+    const statGrid = `<div class="stat-grid">
+      <div class="stat-box"><div class="stat-val">${pct}%</div><div class="stat-lbl">Readiness</div></div>
+      <div class="stat-box"><div class="stat-val" style="color:${variance<-20?'var(--red)':variance<0?'var(--amber-dark)':'var(--green)'}">${variance>=0?'+':''}${variance}%</div><div class="stat-lbl">Variance</div></div>
+      <div class="stat-box"><div class="stat-val">${Math.abs(weeksOut)}</div><div class="stat-lbl">${weeksOut>=0?'Weeks out':'Wks post SD'}</div></div>
+      <div class="stat-box"><div class="stat-val" style="color:${openActions.length>0?'var(--red)':'var(--green)'}">${openActions.length}</div><div class="stat-lbl">Open actions</div></div>
     </div>`;
 
-  document.getElementById("report-modal").classList.add("open");
-}
+    body.innerHTML = statGrid + html;
+    document.getElementById('reportOutputTitle').textContent =
+      (config.shutdownName || 'Shutdown') + ' — Readiness Report · ' + new Date().toLocaleDateString('en-AU');
 
-function closeReport() {
-  document.getElementById("report-modal").classList.remove("open");
-}
-
-// ── New project ────────────────────────────────────────────
-
-function showNewProject() {
-  document.getElementById("new-proj-modal").classList.add("open");
-  setTimeout(()=>document.getElementById("new-proj-name").focus(),50);
-}
-
-function closeNewProject() {
-  document.getElementById("new-proj-modal").classList.remove("open");
-  document.getElementById("new-proj-name").value = "";
-}
-
-async function createProject() {
-  const name = document.getElementById("new-proj-name").value.trim();
-  if (!name) return;
-  closeNewProject();
-  const data = await apiPost({ action:"createProject", project:name });
-  if (data.ok) {
-    projects.push({ id:data.id, name:data.name, createdAt:new Date().toISOString() });
-    renderSidebar();
-    await selectProject(data.id);
+  } catch(e) {
+    body.innerHTML = '<div class="report-error">Error generating report: ' + e.message + '</div>';
   }
+
+  btn.disabled = false;
+  btn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Regenerate report';
 }
 
-// ── Utilities ──────────────────────────────────────────────
+async function exportReportDocx() {
+  if (!lastReportText) { showToast('Generate a report first'); return; }
 
-function esc(s) {
-  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-}
+  const btn = document.querySelector('.report-export-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg> Generating…';
 
-function formatTs(iso) {
-  if (!iso) return "";
+  const totalTasks = tasks.length;
+  const doneTasks = tasks.filter(t => taskIsDone(t.taskId)).length;
+  const pct = readinessPctFor(tasks);
+  const targetPct = targetPctForCells(tasks);
+  const variance = pct - targetPct;
+  const openCount = actions.filter(a => a.status === 'Open' || a.status === 'Overdue').length;
+
   try {
-    return new Date(iso).toLocaleString("en-AU",{
-      day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"
+    // Use POST for export — report text is too long for GET URL
+    const exportParams = new URLSearchParams({
+      action: 'exportDocx',
+      shutdownName: encodeURIComponent(config.shutdownName || 'Shutdown'),
+      revision: encodeURIComponent(config.revision || ''),
+      weeksOut: weeksOut,
+      pct, variance, openCount
+    }).toString();
+    const exportFetch = await fetch(GAS_URL + '?' + exportParams, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      redirect: 'follow',
+      body: encodeURIComponent(lastReportText)
     });
-  } catch { return iso; }
+    const exportText = await exportFetch.text();
+    let res;
+    try { res = JSON.parse(exportText); } catch(e) { throw new Error('Bad response: ' + exportText.slice(0,100)); }
+
+    if (res.error) throw new Error(res.error);
+    if (!res.base64) throw new Error('No file returned');
+
+    // Decode base64 and trigger download
+    const binary = atob(res.base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    const blob = new Blob([bytes], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = (config.shutdownName || 'Shutdown').replace(/\s+/g, '_') + '_Readiness_Report_' + new Date().toISOString().slice(0,10) + '.docx';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('Word document downloaded');
+
+  } catch(e) {
+    showToast('Export failed: ' + e.message);
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '<svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Export Word';
 }
 
-// ── Mobile sidebar ────────────────────────────────────────
+// ── Task editor ──────────────────────────────────────────────
+let teTasks = [];      // local editable copy
+let teActiveRole = ''; // currently filtered role
 
-function toggleSidebar() {
-  const sb = document.getElementById("sidebar");
-  const ov = document.getElementById("sidebar-overlay");
-  const isOpen = sb.classList.contains("open");
-  if (isOpen) { closeSidebar(); } else {
-    sb.classList.add("open");
-    ov.classList.add("open");
-    document.body.style.overflow = "hidden";
+function teInit() {
+  // Clone tasks into editable array
+  teTasks = tasks.map(t => ({ ...t }));
+  const roles = [...new Set(teTasks.map(t => t.role))];
+  teActiveRole = teActiveRole || roles[0] || '';
+
+  // Role filter
+  let filterHtml = roles.map(r =>
+    `<button class="te-role-btn ${r === teActiveRole ? 'active' : ''}" onclick="teSetRole('${r.replace(/'/g, "\\'")}')">${r}</button>`
+  ).join('');
+  document.getElementById('teRoleFilter').innerHTML = filterHtml;
+  teRenderList();
+}
+
+function teSetRole(role) {
+  teActiveRole = role;
+  // Update filter buttons
+  document.querySelectorAll('.te-role-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent === role);
+  });
+  teRenderList();
+}
+
+function teRenderList() {
+  const filtered = teTasks.filter(t => t.role === teActiveRole);
+  const roles = [...new Set(teTasks.map(t => t.role))];
+  const kpiNames = kpis.map(k => k.name);
+
+  const kpiOptions = ['', ...kpiNames].map(k =>
+    `<option value="${k}">${k || '— none —'}</option>`
+  ).join('');
+
+  const roleOptions = roles.map(r =>
+    `<option value="${r}">${r}</option>`
+  ).join('');
+
+  const html = filtered.map((t, i) => {
+    const globalIdx = teTasks.indexOf(t);
+    return `<div class="te-task-row" id="te-row-${globalIdx}">
+      <div class="te-drag" title="Drag to reorder">⠿</div>
+      <div class="te-task-body">
+        <textarea class="te-desc" rows="2"
+          oninput="teTasks[${globalIdx}].description=this.value">${t.description}</textarea>
+        <div class="te-meta-row">
+          <span class="te-meta-label">Role:</span>
+          <select onchange="teTasks[${globalIdx}].role=this.value;teInit()">
+            ${roles.map(r => `<option value="${r}" ${r===t.role?'selected':''}>${r}</option>`).join('')}
+          </select>
+          <span class="te-meta-label">W-due:</span>
+          <input type="number" value="${t.weekDue}" min="-20" max="4"
+            onchange="teTasks[${globalIdx}].weekDue=Number(this.value)">
+          <span class="te-meta-label">Dur:</span>
+          <input type="number" value="${t.duration}" min="1" max="20"
+            onchange="teTasks[${globalIdx}].duration=Number(this.value)">
+          <span class="te-meta-label">KPI:</span>
+          <select onchange="teTasks[${globalIdx}].kpiLink=this.value">
+            ${['', ...kpiNames].map(k =>
+              `<option value="${k}" ${k===t.kpiLink?'selected':''}>${k||'— none —'}</option>`
+            ).join('')}
+          </select>
+          <span class="te-task-id">${t.taskId}</span>
+        </div>
+      </div>
+      <button class="te-del-btn" onclick="teDeleteTask(${globalIdx})" title="Remove task">✕</button>
+    </div>`;
+  }).join('');
+
+  document.getElementById('teTaskList').innerHTML = html || '<div style="padding:14px;color:var(--text-muted);font-size:13px">No tasks for this role</div>';
+}
+
+function teAddTask() {
+  const roles = [...new Set(teTasks.map(t => t.role))];
+  const role = teActiveRole || roles[0] || 'Shut Coordinator';
+  // Generate a new unique ID
+  const existing = teTasks.map(t => t.taskId);
+  let newId = role.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+  let num = teTasks.filter(t => t.role === role).length + 1;
+  while (existing.includes(newId + String(num).padStart(3,'0'))) num++;
+  const taskId = newId + String(num).padStart(3,'0');
+  const maxSort = Math.max(0, ...teTasks.filter(t => t.role === role).map(t => Number(t.sortOrder)||0));
+  teTasks.push({
+    taskId, role, description: 'New task', weekDue: -4,
+    duration: 1, kpiLink: '', sortOrder: maxSort + 1
+  });
+  teRenderList();
+  // Scroll to bottom of list
+  const list = document.getElementById('teTaskList');
+  list.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function teDeleteTask(idx) {
+  const task = teTasks[idx];
+  if (!confirm(`Remove "${task.description}"?\n\nThis only removes it from the task list — past completion records are kept.`)) return;
+  teTasks.splice(idx, 1);
+  // Re-sort sortOrder for that role
+  let sort = 1;
+  teTasks.filter(t => t.role === task.role).forEach(t => { t.sortOrder = sort++; });
+  teInit();
+}
+
+async function teSaveTasks() {
+  const btn = document.getElementById('teTaskSaveBtn');
+  btn.textContent = 'Saving…'; btn.disabled = true;
+  try {
+    const qs = new URLSearchParams({ action: 'saveTasks' }).toString();
+    const postRes = await fetch(GAS_URL + '?' + qs, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      redirect: 'follow',
+      body: encodeURIComponent(JSON.stringify(teTasks))
+    });
+    const postText = await postRes.text();
+    let res;
+    try { res = JSON.parse(postText); } catch(e) { throw new Error('Bad response: ' + postText.slice(0,100)); }
+
+    if (res.ok) {
+      // Refresh local tasks array
+      tasks = teTasks.map(t => ({ ...t }));
+      renderChecklist();
+      btn.textContent = 'Saved!'; btn.classList.add('success');
+      setTimeout(() => { btn.textContent = 'Save tasks'; btn.classList.remove('success'); btn.disabled = false; }, 2000);
+      showToast('Tasks updated');
+    } else {
+      showToast('Error: ' + (res.error || 'Unknown'));
+      btn.textContent = 'Save tasks'; btn.disabled = false;
+    }
+  } catch(e) {
+    showToast('Error: ' + e.message);
+    btn.textContent = 'Save tasks'; btn.disabled = false;
   }
 }
 
-function closeSidebar() {
-  document.getElementById("sidebar").classList.remove("open");
-  document.getElementById("sidebar-overlay").classList.remove("open");
-  document.body.style.overflow = "";
+// ── Reset progress (new shutdown cycle) ─────────────────────────
+function confirmResetProgress() {
+  document.getElementById('resetConfirmInput').value = '';
+  document.getElementById('resetConfirmGoBtn').disabled = true;
+  document.getElementById('resetConfirmOverlay').classList.add('open');
+}
+function closeResetConfirm() {
+  document.getElementById('resetConfirmOverlay').classList.remove('open');
+}
+function checkResetConfirmInput() {
+  const val = document.getElementById('resetConfirmInput').value.trim();
+  document.getElementById('resetConfirmGoBtn').disabled = (val !== 'RESET');
 }
 
-init();
+async function executeResetProgress() {
+  const btn = document.getElementById('resetConfirmGoBtn');
+  btn.textContent = 'Clearing…'; btn.disabled = true;
+  try {
+    const res = await api({ action: 'resetProgress' });
+    if (res.ok) {
+      // Clear local state immediately — Actions are intentionally left untouched
+      statuses = {};
+      kpis.forEach(k => { k.actualPct = 0; });
+      closeResetConfirm();
+      updateReadinessBar();
+      renderDashboard();
+      renderChecklist();
+      renderKpis();
+      renderActions();
+      renderProgress();
+      showToast('Checklist and KPI progress cleared — ready for a new shutdown cycle');
+    } else {
+      showToast('Error: ' + (res.error || 'Unknown'));
+    }
+  } catch(e) {
+    showToast('Error: ' + e.message);
+  }
+  btn.textContent = 'Clear Everything'; btn.disabled = false;
+}
+
+// ── Setup ─────────────────────────────────────────────────────
+let setupUsers = []; // local copy of users for editing
+
+function renderSetupPage() {
+  document.getElementById('setup-shutName').value = config.shutdownName || '';
+  // Normalise date to YYYY-MM-DD for the date input regardless of how GAS stored it
+  let dateVal = config.startDate || '';
+  // If GAS returned a non-ISO format (e.g. "Mon Sep 07 2026..."), reparse it
+  if (dateVal && !dateVal.match(/^\d{4}-\d{2}-\d{2}$/)) {
+    const d = new Date(dateVal);
+    if (!isNaN(d)) {
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,'0');
+      const dy = String(d.getDate()).padStart(2,'0');
+      dateVal = y+'-'+m+'-'+dy;
+    } else {
+      dateVal = ''; // unparseable — clear it so user must re-enter
+    }
+  }
+  document.getElementById('setup-startDate').value = dateVal;
+  document.getElementById('setup-duration').value  = config.duration || '';
+  document.getElementById('setup-revision').value  = config.revision || '';
+  loadUsersForSetup();
+}
+
+async function loadUsersForSetup() {
+  const container = document.getElementById('rolesContainer');
+  container.innerHTML = '<div style="padding:14px;color:var(--text-muted);font-size:13px">Loading…</div>';
+  try {
+    const res = await api({ action: 'getUsers' });
+    setupUsers = Array.isArray(res) ? res : [];
+    renderRoleRows();
+  } catch(e) {
+    container.innerHTML = '<div style="padding:14px;color:var(--red);font-size:13px">Error loading users: ' + e.message + '</div>';
+  }
+}
+
+function renderRoleRows() {
+  const container = document.getElementById('rolesContainer');
+  if (!setupUsers.length) {
+    container.innerHTML = '<div style="padding:14px;color:var(--text-muted);font-size:13px">No roles found</div>';
+    return;
+  }
+  container.innerHTML = setupUsers.map((u, i) => `
+    <div class="role-row-setup" id="rolerow-${i}">
+      <input class="role-name" type="text" value="${u.name || ''}" placeholder="Role name"
+        oninput="setupUsers[${i}].name=this.value">
+      <input class="role-pin" type="text" maxlength="4" value="${u.pin || ''}" placeholder="PIN"
+        oninput="setupUsers[${i}].pin=this.value">
+      <label class="toggle" title="${u.active ? 'Active' : 'Inactive'}">
+        <input type="checkbox" ${u.active === true || u.active === 'TRUE' || u.active === 'true' ? 'checked' : ''}
+          onchange="setupUsers[${i}].active=this.checked">
+        <div class="toggle-track"></div>
+        <div class="toggle-thumb"></div>
+      </label>
+      ${u.userId === 'U999' ? '<div style="width:24px"></div>' :
+        `<button class="role-del-btn" onclick="deleteRoleRow(${i})" title="Remove">✕</button>`}
+    </div>`).join('');
+}
+
+function addRoleRow() {
+  const newId = 'U' + Date.now();
+  setupUsers.push({ userId: newId, name: '', role: '', pin: '', active: true, _new: true });
+  renderRoleRows();
+  // focus the new name field
+  const rows = document.querySelectorAll('.role-row-setup');
+  const lastInput = rows[rows.length - 1]?.querySelector('.role-name');
+  if (lastInput) lastInput.focus();
+}
+
+function deleteRoleRow(i) {
+  if (setupUsers[i].userId === 'U999') return; // protect admin
+  setupUsers.splice(i, 1);
+  renderRoleRows();
+}
+
+async function saveConfig() {
+  const btn = document.getElementById('saveConfigBtn');
+  const name  = document.getElementById('setup-shutName').value.trim();
+  const date  = document.getElementById('setup-startDate').value; // YYYY-MM-DD
+  const dur   = document.getElementById('setup-duration').value.trim();
+  const rev   = document.getElementById('setup-revision').value.trim();
+  if (!name || !date) { showToast('Name and date are required'); return; }
+  btn.textContent = 'Saving…'; btn.disabled = true;
+  try {
+    const res = await api({ action:'saveConfig', shutdownName:name, startDate:date, duration:dur, revision:rev });
+    if (res.ok) {
+      config.shutdownName = name; config.startDate = date; config.duration = dur; config.revision = rev;
+      // Parse date as local time (split to avoid UTC offset shifting the day)
+      const [y,m,d] = date.split('-').map(Number);
+      const start = new Date(y, m-1, d);
+      weeksOut = Math.round((start - new Date()) / (7*24*60*60*1000));
+      document.getElementById('shutName').textContent = name;
+      document.getElementById('weeksPill').textContent = weeksOut >= 0 ? 'W-'+weeksOut : 'W+'+Math.abs(weeksOut);
+      document.getElementById('weeksPill').style.background = weeksOut <= 2 ? 'var(--red)' : 'var(--amber)';
+      renderDashboard(); // refresh variance/weeks cards immediately
+      btn.textContent = 'Saved!'; btn.classList.add('success');
+      setTimeout(() => { btn.textContent = 'Save shutdown details'; btn.classList.remove('success'); btn.disabled = false; }, 2000);
+      showToast('Shutdown details updated');
+    } else { showToast('Error: ' + (res.error || 'Unknown')); btn.textContent = 'Save shutdown details'; btn.disabled = false; }
+  } catch(e) { showToast('Error: ' + e.message); btn.textContent = 'Save shutdown details'; btn.disabled = false; }
+}
+
+async function saveRoles() {
+  const btn = document.getElementById('saveRolesBtn');
+  // Validate PINs
+  for (const u of setupUsers) {
+    if (!u.name.trim()) { showToast('All roles need a name'); return; }
+    if (!/^\d{4}$/.test(String(u.pin).trim())) { showToast('PINs must be exactly 4 digits (' + u.name + ')'); return; }
+  }
+  // Check for duplicate PINs
+  const pins = setupUsers.map(u => String(u.pin).trim());
+  if (new Set(pins).size !== pins.length) { showToast('Each role must have a unique PIN'); return; }
+
+  btn.textContent = 'Saving…'; btn.disabled = true;
+  try {
+    const payload = setupUsers.map(u => ({
+      userId: u.userId, name: u.name.trim(), role: u.name.trim(),
+      pin: String(u.pin).trim(), active: u.active === true || u.active === 'true' || u.active === 'TRUE'
+    }));
+    const res = await api({ action:'saveUsers', users: JSON.stringify(payload) });
+    if (res.ok) {
+      btn.textContent = 'Saved!'; btn.classList.add('success');
+      setTimeout(() => { btn.textContent = 'Save roles'; btn.classList.remove('success'); btn.disabled = false; }, 2000);
+      showToast('Roles updated');
+    } else { showToast('Error: ' + (res.error || 'Unknown')); btn.textContent = 'Save roles'; btn.disabled = false; }
+  } catch(e) { showToast('Error: ' + e.message); btn.textContent = 'Save roles'; btn.disabled = false; }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── Tabs ─────────────────────────────────────────────────────
+function showTab(id, el) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('view-' + id).classList.add('active');
+  el.classList.add('active');
+  if (id === 'setup') { renderSetupPage(); teInit(); }
+}
+
+// ── Boot ─────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  const stored = sessionStorage.getItem('srdUser');
+  if (stored) {
+    currentUser = JSON.parse(stored);
+    if (currentUser.role === 'Admin') {
+      document.getElementById('tab-setup').classList.remove('hidden');
+      document.getElementById('tab-report').classList.remove('hidden');
+    }
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('mainApp').classList.remove('hidden');
+    initApp();
+  }
+});
 </script>
 </body>
 </html>
