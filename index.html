@@ -1347,10 +1347,10 @@ function renderDashboard() {
   document.getElementById('dh-actual-cell').classList.toggle('on-pace', onPace);
 
   // ── Phase chevrons (Planning / Scheduling / Execution) ──
-  const phaseColors = { Planning: '#5a6a80', Scheduling: '#8a98a8', Execution: '#c4ccd6' };
-  const phases = ['Planning', 'Scheduling', 'Execution'];
+  const phaseColors = { PLAN: '#5a6a80', SCHEDULE: '#8a98a8', EXECUTE: '#c4ccd6' };
+  const phases = ['PLAN', 'SCHEDULE', 'EXECUTE'];
   // Determine active phase by weeksOut: Planning > 5wks out, Scheduling 1-5wks, Execution <1wk
-  let activePhase = weeksOut > 5 ? 'Planning' : weeksOut >= 1 ? 'Scheduling' : 'Execution';
+  let activePhase = weeksOut > 5 ? 'PLAN' : weeksOut >= 1 ? 'SCHEDULE' : 'EXECUTE';
   document.getElementById('dashPhases').innerHTML = phases.map(p => {
     const isActive = p === activePhase;
     return `<div class="dash-phase" style="background:${isActive ? 'var(--navy)' : '#b8c0cc'}">${p}</div>`;
