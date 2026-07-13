@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -392,6 +393,9 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sa
 .te-task-row{display:flex;align-items:flex-start;padding:10px 14px;border-bottom:1px solid var(--border);gap:8px;background:var(--white)}
 .te-task-row:hover{background:var(--surface)}
 .te-drag{color:var(--text-muted);font-size:16px;cursor:grab;padding-top:2px;flex-shrink:0;user-select:none}
+.te-drag:active{cursor:grabbing}
+.te-task-row.te-dragging{opacity:.4}
+.te-task-row.te-drag-over{box-shadow:inset 0 2px 0 var(--teal)}
 .te-task-body{flex:1;display:flex;flex-direction:column;gap:6px;min-width:0}
 .te-desc{font-size:13px;padding:5px 8px;border:1px solid var(--border);border-radius:6px;background:var(--white);color:var(--text);font-family:inherit;width:100%;resize:none;line-height:1.4}
 .te-desc:focus{outline:none;border-color:var(--teal)}
@@ -2088,8 +2092,13 @@ function teRenderList() {
 
   const html = filtered.map((t, i) => {
     const globalIdx = teTasks.indexOf(t);
-    return `<div class="te-task-row" id="te-row-${globalIdx}">
-      <div class="te-drag" title="Drag to reorder">⠿</div>
+    return `<div class="te-task-row" id="te-row-${globalIdx}"
+      ondragover="teRowDragOver(event, ${globalIdx})"
+      ondragleave="teRowDragLeave(event)"
+      ondrop="teRowDrop(event, ${globalIdx})">
+      <div class="te-drag" title="Drag to reorder" draggable="true"
+        ondragstart="teRowDragStart(event, ${globalIdx})"
+        ondragend="teRowDragEnd(event)">⠿</div>
       <div class="te-task-body">
         <textarea class="te-desc" rows="2"
           oninput="teTasks[${globalIdx}].description=this.value">${t.description}</textarea>
@@ -2118,6 +2127,60 @@ function teRenderList() {
   }).join('');
 
   document.getElementById('teTaskList').innerHTML = html || '<div style="padding:14px;color:var(--text-muted);font-size:13px">No tasks for this role</div>';
+}
+
+// Drag-to-reorder for task editor
+let teDragSrcIdx = null;
+
+function teRowDragStart(ev, idx) {
+  teDragSrcIdx = idx;
+  ev.dataTransfer.effectAllowed = 'move';
+  try { ev.dataTransfer.setData('text/plain', String(idx)); } catch(e) {}
+  const row = document.getElementById('te-row-' + idx);
+  if (row) row.classList.add('te-dragging');
+}
+
+function teRowDragEnd() {
+  document.querySelectorAll('.te-task-row.te-dragging, .te-task-row.te-drag-over')
+    .forEach(el => el.classList.remove('te-dragging', 'te-drag-over'));
+  teDragSrcIdx = null;
+}
+
+function teRowDragOver(ev, idx) {
+  if (teDragSrcIdx === null || idx === teDragSrcIdx) return;
+  ev.preventDefault();
+  ev.dataTransfer.dropEffect = 'move';
+  document.querySelectorAll('.te-task-row.te-drag-over').forEach(el => el.classList.remove('te-drag-over'));
+  const row = document.getElementById('te-row-' + idx);
+  if (row) row.classList.add('te-drag-over');
+}
+
+function teRowDragLeave(ev) {
+  ev.currentTarget.classList.remove('te-drag-over');
+}
+
+function teRowDrop(ev, idx) {
+  ev.preventDefault();
+  const from = teDragSrcIdx;
+  document.querySelectorAll('.te-task-row.te-dragging, .te-task-row.te-drag-over')
+    .forEach(el => el.classList.remove('te-dragging', 'te-drag-over'));
+  teDragSrcIdx = null;
+  if (from === null || from === idx) return;
+  teReorderTasks(from, idx);
+}
+
+function teReorderTasks(fromIdx, toIdx) {
+  const moved = teTasks[fromIdx];
+  if (!moved) return;
+  teTasks.splice(fromIdx, 1);
+  teTasks.splice(toIdx, 0, moved);
+  // Keep sortOrder sequential per role so the new order persists on save
+  const counters = {};
+  teTasks.forEach(t => {
+    counters[t.role] = (counters[t.role] || 0) + 1;
+    t.sortOrder = counters[t.role];
+  });
+  teRenderList();
 }
 
 function teAddTask() {
