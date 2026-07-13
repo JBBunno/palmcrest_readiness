@@ -822,6 +822,22 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sa
           <div class="setup-note">Changing a task ID will lose its completion history. Safe to edit descriptions, week due, duration and KPI link freely.</div>
         </div>
 
+        <!-- KPI editor -->
+        <div class="setup-section">
+          <div class="setup-section-head">
+            KPIs
+            <span style="font-size:10px;color:var(--text-muted);text-transform:none;font-weight:400">edit name, category, week due — drag to reorder</span>
+          </div>
+          <div class="task-editor-filter" id="keCategoryFilter"></div>
+          <div class="task-editor-list" id="keKpiList"></div>
+          <button class="te-add-btn" onclick="keAddKPI()">
+            <svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add KPI
+          </button>
+          <button class="te-save-btn" id="keKpiSaveBtn" onclick="keSaveKPIs()">Save KPIs</button>
+          <div class="setup-note">Renaming a KPI automatically updates any tasks linked to it, so those links aren't lost. Actual % and target % are calculated automatically and aren't edited here.</div>
+        </div>
+
         <!-- Reset progress -->
         <div class="setup-section reset-section">
           <div class="setup-section-head reset-head">
@@ -2055,12 +2071,17 @@ let teTasks = [];      // local editable copy
 let teActiveRole = ''; // currently filtered role
 
 function teInit() {
-  // Clone tasks into editable array
+  // Clone tasks into editable array (fresh load from server data)
   teTasks = tasks.map(t => ({ ...t }));
-  const roles = [...new Set(teTasks.map(t => t.role))];
-  teActiveRole = teActiveRole || roles[0] || '';
+  teRefreshFilters();
+}
 
-  // Role filter
+// Rebuild the role filter chips from the CURRENT local teTasks (not the server copy),
+// so in-progress edits (role changes, deletes, adds) aren't lost when the filter updates.
+function teRefreshFilters() {
+  const roles = [...new Set(teTasks.map(t => t.role))];
+  if (!roles.includes(teActiveRole)) teActiveRole = roles[0] || '';
+
   let filterHtml = roles.map(r =>
     `<button class="te-role-btn ${r === teActiveRole ? 'active' : ''}" onclick="teSetRole('${r.replace(/'/g, "\\'")}')">${r}</button>`
   ).join('');
@@ -2104,7 +2125,7 @@ function teRenderList() {
           oninput="teTasks[${globalIdx}].description=this.value">${t.description}</textarea>
         <div class="te-meta-row">
           <span class="te-meta-label">Role:</span>
-          <select onchange="teTasks[${globalIdx}].role=this.value;teInit()">
+          <select onchange="teTasks[${globalIdx}].role=this.value;teRefreshFilters()">
             ${roles.map(r => `<option value="${r}" ${r===t.role?'selected':''}>${r}</option>`).join('')}
           </select>
           <span class="te-meta-label">W-due:</span>
@@ -2210,7 +2231,7 @@ function teDeleteTask(idx) {
   // Re-sort sortOrder for that role
   let sort = 1;
   teTasks.filter(t => t.role === task.role).forEach(t => { t.sortOrder = sort++; });
-  teInit();
+  teRefreshFilters();
 }
 
 async function teSaveTasks() {
@@ -2242,6 +2263,181 @@ async function teSaveTasks() {
   } catch(e) {
     showToast('Error: ' + e.message);
     btn.textContent = 'Save tasks'; btn.disabled = false;
+  }
+}
+
+// ── KPI editor ───────────────────────────────────────────────
+let keKpis = [];         // local editable copy
+let keActiveCategory = '';
+
+function keEsc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function keInit() {
+  // Clone kpis into editable array (fresh load from server data)
+  keKpis = kpis.map(k => ({ kpiId: k.kpiId, category: k.category, name: k.name, weekDue: k.weekDue }));
+  keRefreshFilters();
+}
+
+// Rebuild the category filter chips from the CURRENT local keKpis (not the server copy),
+// so in-progress edits (renames, deletes, adds) aren't lost when the filter updates.
+function keRefreshFilters() {
+  const categories = [...new Set(keKpis.map(k => k.category))];
+  if (!categories.includes(keActiveCategory)) keActiveCategory = categories[0] || '';
+
+  const filterHtml = categories.map(c =>
+    `<button class="te-role-btn ${c === keActiveCategory ? 'active' : ''}" onclick="keSetCategory('${String(c).replace(/'/g, "\\'")}')">${keEsc(c)}</button>`
+  ).join('');
+  document.getElementById('keCategoryFilter').innerHTML = filterHtml;
+  keRenderList();
+}
+
+function keSetCategory(category) {
+  keActiveCategory = category;
+  document.querySelectorAll('#keCategoryFilter .te-role-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent === category);
+  });
+  keRenderList();
+}
+
+function keRenderList() {
+  const filtered = keKpis.filter(k => k.category === keActiveCategory);
+
+  const html = filtered.map(k => {
+    const globalIdx = keKpis.indexOf(k);
+    return `<div class="te-task-row" id="ke-row-${globalIdx}"
+      ondragover="keRowDragOver(event, ${globalIdx})"
+      ondragleave="keRowDragLeave(event)"
+      ondrop="keRowDrop(event, ${globalIdx})">
+      <div class="te-drag" title="Drag to reorder" draggable="true"
+        ondragstart="keRowDragStart(event, ${globalIdx})"
+        ondragend="keRowDragEnd(event)">⠿</div>
+      <div class="te-task-body">
+        <input type="text" class="te-desc" style="padding:5px 8px" value="${keEsc(k.name)}"
+          onchange="keKpis[${globalIdx}].name=this.value">
+        <div class="te-meta-row">
+          <span class="te-meta-label">Category:</span>
+          <input type="text" style="width:110px" value="${keEsc(k.category)}"
+            onchange="keKpis[${globalIdx}].category=this.value;keRefreshFilters()">
+          <span class="te-meta-label">W-due:</span>
+          <input type="number" value="${k.weekDue}" min="-20" max="4"
+            onchange="keKpis[${globalIdx}].weekDue=Number(this.value)">
+          <span class="te-task-id">${k.kpiId}</span>
+        </div>
+      </div>
+      <button class="te-del-btn" onclick="keDeleteKPI(${globalIdx})" title="Remove KPI">✕</button>
+    </div>`;
+  }).join('');
+
+  document.getElementById('keKpiList').innerHTML = html || '<div style="padding:14px;color:var(--text-muted);font-size:13px">No KPIs in this category</div>';
+}
+
+function keAddKPI() {
+  const categories = [...new Set(keKpis.map(k => k.category))];
+  const category = keActiveCategory || categories[0] || 'Planning';
+  const existing = keKpis.map(k => k.kpiId);
+  let num = keKpis.length + 1;
+  let kpiId = 'KPI' + String(num).padStart(2, '0');
+  while (existing.includes(kpiId)) { num++; kpiId = 'KPI' + String(num).padStart(2, '0'); }
+  keKpis.push({ kpiId, category, name: 'New KPI', weekDue: -4 });
+  keRefreshFilters();
+  const list = document.getElementById('keKpiList');
+  list.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function keDeleteKPI(idx) {
+  const k = keKpis[idx];
+  if (!confirm(`Remove "${k.name}"?\n\nTasks linked to this KPI will keep the link text, but it won't match any KPI until you either re-link them to a different KPI or add a new one with this name.`)) return;
+  keKpis.splice(idx, 1);
+  keRefreshFilters();
+}
+
+// Drag-to-reorder for KPI editor
+let keDragSrcIdx = null;
+
+function keRowDragStart(ev, idx) {
+  keDragSrcIdx = idx;
+  ev.dataTransfer.effectAllowed = 'move';
+  try { ev.dataTransfer.setData('text/plain', String(idx)); } catch(e) {}
+  const row = document.getElementById('ke-row-' + idx);
+  if (row) row.classList.add('te-dragging');
+}
+
+function keRowDragEnd() {
+  document.querySelectorAll('.te-task-row.te-dragging, .te-task-row.te-drag-over')
+    .forEach(el => el.classList.remove('te-dragging', 'te-drag-over'));
+  keDragSrcIdx = null;
+}
+
+function keRowDragOver(ev, idx) {
+  if (keDragSrcIdx === null || idx === keDragSrcIdx) return;
+  ev.preventDefault();
+  ev.dataTransfer.dropEffect = 'move';
+  document.querySelectorAll('.te-task-row.te-drag-over').forEach(el => el.classList.remove('te-drag-over'));
+  const row = document.getElementById('ke-row-' + idx);
+  if (row) row.classList.add('te-drag-over');
+}
+
+function keRowDragLeave(ev) {
+  ev.currentTarget.classList.remove('te-drag-over');
+}
+
+function keRowDrop(ev, idx) {
+  ev.preventDefault();
+  const from = keDragSrcIdx;
+  document.querySelectorAll('.te-task-row.te-dragging, .te-task-row.te-drag-over')
+    .forEach(el => el.classList.remove('te-dragging', 'te-drag-over'));
+  keDragSrcIdx = null;
+  if (from === null || from === idx) return;
+  keReorderKPIs(from, idx);
+}
+
+function keReorderKPIs(fromIdx, toIdx) {
+  const moved = keKpis[fromIdx];
+  if (!moved) return;
+  keKpis.splice(fromIdx, 1);
+  keKpis.splice(toIdx, 0, moved);
+  keRenderList();
+}
+
+async function keSaveKPIs() {
+  const btn = document.getElementById('keKpiSaveBtn');
+  btn.textContent = 'Saving…'; btn.disabled = true;
+  try {
+    const qs = new URLSearchParams({ action: 'saveKPIs' }).toString();
+    const postRes = await fetch(GAS_URL + '?' + qs, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      redirect: 'follow',
+      body: encodeURIComponent(JSON.stringify(keKpis))
+    });
+    const postText = await postRes.text();
+    let res;
+    try { res = JSON.parse(postText); } catch(e) { throw new Error('Bad response: ' + postText.slice(0,100)); }
+
+    if (res.ok) {
+      // Refresh KPI + task data since a rename may have updated task links server-side
+      const [freshKpis, freshTasks] = await Promise.all([
+        api({ action: 'getKPIs' }),
+        api({ action: 'getTasks' })
+      ]);
+      kpis = freshKpis;
+      tasks = freshTasks;
+      renderDashboard();
+      teInit();
+      btn.textContent = 'Saved!'; btn.classList.add('success');
+      setTimeout(() => { btn.textContent = 'Save KPIs'; btn.classList.remove('success'); btn.disabled = false; }, 2000);
+      showToast('KPIs updated');
+    } else {
+      showToast('Error: ' + (res.error || 'Unknown'));
+      btn.textContent = 'Save KPIs'; btn.disabled = false;
+    }
+  } catch(e) {
+    showToast('Error: ' + e.message);
+    btn.textContent = 'Save KPIs'; btn.disabled = false;
   }
 }
 
@@ -2426,7 +2622,7 @@ function showTab(id, el) {
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('view-' + id).classList.add('active');
   el.classList.add('active');
-  if (id === 'setup') { renderSetupPage(); teInit(); }
+  if (id === 'setup') { renderSetupPage(); teInit(); keInit(); }
 }
 
 // ── Boot ─────────────────────────────────────────────────────
