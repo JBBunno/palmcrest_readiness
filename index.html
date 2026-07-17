@@ -2069,6 +2069,7 @@ async function exportReportDocx() {
 // ── Task editor ──────────────────────────────────────────────
 let teTasks = [];      // local editable copy
 let teActiveRole = ''; // currently filtered role
+let activeRoleNames = []; // active role names from Setup (used so new roles show up even with 0 tasks)
 
 function teInit() {
   // Clone tasks into editable array (fresh load from server data)
@@ -2078,8 +2079,10 @@ function teInit() {
 
 // Rebuild the role filter chips from the CURRENT local teTasks (not the server copy),
 // so in-progress edits (role changes, deletes, adds) aren't lost when the filter updates.
+// Also includes active role names from Setup, so a role with zero tasks still shows up
+// and can be assigned its first task.
 function teRefreshFilters() {
-  const roles = [...new Set(teTasks.map(t => t.role))];
+  const roles = [...new Set([...teTasks.map(t => t.role), ...activeRoleNames])];
   if (!roles.includes(teActiveRole)) teActiveRole = roles[0] || '';
 
   let filterHtml = roles.map(r =>
@@ -2100,7 +2103,7 @@ function teSetRole(role) {
 
 function teRenderList() {
   const filtered = teTasks.filter(t => t.role === teActiveRole);
-  const roles = [...new Set(teTasks.map(t => t.role))];
+  const roles = [...new Set([...teTasks.map(t => t.role), ...activeRoleNames])];
   const kpiNames = kpis.map(k => k.name);
 
   const kpiOptions = ['', ...kpiNames].map(k =>
@@ -2205,7 +2208,7 @@ function teReorderTasks(fromIdx, toIdx) {
 }
 
 function teAddTask() {
-  const roles = [...new Set(teTasks.map(t => t.role))];
+  const roles = [...new Set([...teTasks.map(t => t.role), ...activeRoleNames])];
   const role = teActiveRole || roles[0] || 'Shut Coordinator';
   // Generate a new unique ID
   const existing = teTasks.map(t => t.taskId);
@@ -2512,7 +2515,11 @@ async function loadUsersForSetup() {
   try {
     const res = await api({ action: 'getUsers' });
     setupUsers = Array.isArray(res) ? res : [];
+    activeRoleNames = setupUsers
+      .filter(u => u.active === true || u.active === 'true' || u.active === 'TRUE')
+      .map(u => u.name || u.role);
     renderRoleRows();
+    teRefreshFilters(); // keep Task Editor's role list in sync with Setup roles once they've loaded
   } catch(e) {
     container.innerHTML = '<div style="padding:14px;color:var(--red);font-size:13px">Error loading users: ' + e.message + '</div>';
   }
@@ -2620,6 +2627,9 @@ async function saveRoles() {
         api({ action: 'getTasks' })
       ]);
       setupUsers = Array.isArray(freshUsers) ? freshUsers : setupUsers;
+      activeRoleNames = setupUsers
+        .filter(u => u.active === true || u.active === 'true' || u.active === 'TRUE')
+        .map(u => u.name || u.role);
       tasks = freshTasks;
       activeRole = 'all';
       renderRoleRows();
