@@ -2601,13 +2601,43 @@ async function saveRoles() {
       userId: u.userId, name: u.name.trim(), role: u.name.trim(),
       pin: String(u.pin).trim(), active: u.active === true || u.active === 'true' || u.active === 'TRUE'
     }));
-    const res = await api({ action:'saveUsers', users: JSON.stringify(payload) });
+
+    const qs = new URLSearchParams({ action: 'saveUsers' }).toString();
+    const postRes = await fetch(GAS_URL + '?' + qs, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      redirect: 'follow',
+      body: encodeURIComponent(JSON.stringify(payload))
+    });
+    const postText = await postRes.text();
+    let res;
+    try { res = JSON.parse(postText); } catch(e) { throw new Error('Bad response: ' + postText.slice(0,100)); }
+
     if (res.ok) {
+      // Pull fresh users + tasks so renamed/added/removed roles show up everywhere immediately
+      const [freshUsers, freshTasks] = await Promise.all([
+        api({ action: 'getUsers' }),
+        api({ action: 'getTasks' })
+      ]);
+      setupUsers = Array.isArray(freshUsers) ? freshUsers : setupUsers;
+      tasks = freshTasks;
+      activeRole = 'all';
+      renderRoleRows();
+      renderDashboard();
+      renderChecklist();
+      renderProgress();
+      teInit();
       btn.textContent = 'Saved!'; btn.classList.add('success');
       setTimeout(() => { btn.textContent = 'Save roles'; btn.classList.remove('success'); btn.disabled = false; }, 2000);
       showToast('Roles updated');
-    } else { showToast('Error: ' + (res.error || 'Unknown')); btn.textContent = 'Save roles'; btn.disabled = false; }
-  } catch(e) { showToast('Error: ' + e.message); btn.textContent = 'Save roles'; btn.disabled = false; }
+    } else {
+      showToast('Error: ' + (res.error || 'Unknown'));
+      btn.textContent = 'Save roles'; btn.disabled = false;
+    }
+  } catch(e) {
+    showToast('Error: ' + e.message);
+    btn.textContent = 'Save roles'; btn.disabled = false;
+  }
 }
 
 function showToast(msg) {
